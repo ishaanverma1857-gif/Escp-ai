@@ -1,0 +1,341 @@
+const en = {
+  meta: {
+    title: "ESCP AI — The Future of AI Starts Here",
+    description:
+      "ESCP AI is the student-led society connecting students, companies, and the AI ecosystem across ESCP's Paris, Turin, and Madrid campuses.",
+  },
+  nav: {
+    home: "Home",
+    team: "Team",
+    partners: "Partners",
+    events: "Events",
+    services: "Services",
+    join: "Join us",
+    shop: "Shop",
+    login: "Member login",
+    menu: "Menu",
+    close: "Close",
+    skip: "Skip to content",
+    switchTo: "Français",
+    switchLabel: "Lire le site en français",
+    primary: "Main navigation",
+  },
+  common: {
+    comingSoon: "Coming soon",
+    toBeAnnounced: "To be announced",
+    linkComingSoon: "Link available soon",
+    backToEvents: "All events",
+    learnMore: "Learn more",
+    viewDetails: "View details",
+  },
+  campuses: {
+    paris: "Paris",
+    turin: "Turin",
+    madrid: "Madrid",
+    london: "London",
+    londonNote: "Opening January 2027",
+    mapLabel:
+      "Map connecting ESCP AI's campuses in Paris, Turin and Madrid, with London shown as an upcoming branch.",
+  },
+  home: {
+    heroTitle: ["The Future of AI", "Starts Here"],
+    heroBody:
+      "ESCP AI connects students, companies, and the wider artificial intelligence ecosystem across Paris, Turin, and Madrid. We make AI accessible, practical, and professionally valuable for every ESCP student — whether you are already technical or simply curious about how AI can shape your future.",
+    ctaEvents: "Discover our events",
+    ctaJoin: "Join ESCP AI",
+    ctaServices: "Explore our services",
+    missionTitle: "Our mission",
+    missionBody:
+      "ESCP AI is a student-led community dedicated to making artificial intelligence understandable, useful, and professionally relevant. Through events, partnerships, practical projects, workshops, and career opportunities, we help students discover possible paths in AI, develop new skills, and connect with the people shaping the future.",
+    pillars: [
+      { title: "Accessible", body: "No technical background required. Curiosity is enough." },
+      { title: "Practical", body: "Workshops, case studies, and real projects with companies." },
+      { title: "Professional", body: "Meet the people and organisations shaping AI careers." },
+    ],
+    impactTitle: "Our impact",
+    impactClosing: "Building the AI community of tomorrow — together.",
+    impactLabels: {
+      events: "events organised",
+      members: "members",
+      campuses: "campuses connected",
+      companies: "company collaborations",
+      projects: "student projects supported",
+    } as Record<string, string>,
+    featuredTitle: "Featured event",
+    register: "Register now",
+    upcomingTitle: "Coming up next",
+    allEvents: "View all events",
+    ecosystemTitle: "Part of a wider ecosystem",
+    ecosystemLink: "Meet our partners",
+    joinTitle: "Find your place in the AI community",
+    joinBody: "You do not need to be an AI engineer to join. No hazing, no ego — just curiosity, teamwork, and the will to build something useful.",
+  },
+  team: {
+    title: "Our team",
+    intro:
+      "ESCP AI is built by students from different backgrounds, campuses, and areas of expertise. Our team combines leadership, research, communication, business, events, and innovation.",
+    leadershipTitle: "Leadership team",
+    roles: {
+      president: "President",
+      vicePresident: "Vice-President",
+      treasurer: "Treasurer",
+      generalSecretary: "General Secretary",
+      events: "Head of Events and Logistics",
+      research: "Research and Development",
+      communication: "Communication",
+      business: "Business",
+    } as Record<string, string>,
+    divisionsTitle: "Our divisions",
+    divisionsIntro: "Seven divisions, one community. Each one gives members a concrete way to contribute.",
+    divisions: [
+      { name: "Events and Logistics", purpose: "Conferences, workshops, visits, and networking opportunities." },
+      { name: "Research and Development", purpose: "Emerging technologies, AI applications, and new opportunities." },
+      { name: "Communication", purpose: "Brand identity, content, social media, and event promotion." },
+      { name: "Business", purpose: "Relationships with companies, sponsors, entrepreneurs, and alumni." },
+      { name: "Engineering", purpose: "Practical tools, prototypes, workflows, and digital solutions." },
+      { name: "Entrepreneurship", purpose: "Startups, innovation, new ventures, and business growth." },
+      { name: "Finance", purpose: "Financial analysis, equity research, data, and AI-driven decision-making." },
+    ],
+    campusesTitle: "Across campuses",
+    campusesBody:
+      "ESCP AI connects the ESCP campuses of Paris, Turin, and Madrid. Campus representatives will be announced soon.",
+    representative: "Campus representative",
+  },
+  partners: {
+    title: "Connecting students with the AI ecosystem",
+    intro:
+      "Our partners help students move beyond theory and discover how artificial intelligence is used in real organisations. Through conferences, workshops, case studies, company visits, recruitment opportunities, and collaborative projects, our partnerships create value for both students and organisations.",
+    ecosystemTitle: "Our ecosystem",
+    whyTitle: "Why partner with ESCP AI",
+    why: [
+      "Build visibility among talented students",
+      "Meet future interns, recruits, and entrepreneurs",
+      "Share expertise through workshops and conferences",
+      "Support practical AI education",
+      "Collaborate on student projects and case studies",
+      "Contribute to the development of responsible AI",
+    ],
+    cta: "Become a partner",
+    ctaBody: "Tell us what you would like to build with ESCP students. We will come back to you with a proposal.",
+  },
+  events: {
+    title: "Events",
+    intro:
+      "ESCP AI events are designed to make artificial intelligence practical, accessible, and engaging. Attend a conference, join a workshop, meet professionals, explore an AI company, or participate in a real-world case study.",
+    calendarTitle: "Upcoming calendar",
+    register: "Register for this event",
+    registerShort: "Register",
+    subscribe: "Get event notifications",
+    recapsTitle: "Event recaps",
+    recapsBody:
+      "Missed an event? Explore our recaps, including photographs, key takeaways, speaker quotes, attendance figures, student testimonials, and links to related resources.",
+    recapsEmpty: "Our first recaps will appear here after the KPMG AI Conference on 20 October.",
+    fields: {
+      date: "Date",
+      time: "Time",
+      location: "Location",
+      speakers: "Speakers",
+      programme: "Programme",
+      places: "Available places",
+      accessibility: "Accessibility",
+      partner: "Partner",
+      audience: "Open to",
+    },
+    accessibilityDefault:
+      "Tell us about any access needs when you register and we will do our best to accommodate them.",
+    placesUnknown: "To be confirmed",
+    items: {
+      "kpmg-ai-conference": {
+        title: "KPMG AI Conference",
+        when: "20 October 2026",
+        time: "6:00 PM",
+        location: "ESCP Étienne Marcel campus, Paris",
+        short: "6:00 PM, Étienne Marcel. Open to all.",
+        description:
+          "Join ESCP AI for a conference exploring the opportunities and challenges of artificial intelligence in business. Meet professionals, ask questions, and discover how AI is transforming industries and career paths.",
+        partner: "KPMG",
+        speakers: null as string | null,
+        audience: "Open to all",
+      },
+      "ai-optimisation-workshop": {
+        title: "AI Optimisation Workshop",
+        when: "28 October 2026",
+        time: null as string | null,
+        location: null as string | null,
+        short: "Kick-off with Luke Lord, ESCP x CentraleSupélec double degree.",
+        description:
+          "A hands-on kick-off session led by Luke Lord, a student in the ESCP x CentraleSupélec double degree, on using AI to optimise everyday workflows.",
+        partner: null as string | null,
+        speakers: "Luke Lord" as string | null,
+        audience: null as string | null,
+      },
+      "deep-tech-round-tables": {
+        title: "Deep-Tech Round Tables",
+        when: "Early November",
+        time: null as string | null,
+        location: null as string | null,
+        short: "Discussions with ESCP alumni from the deep-tech ecosystem.",
+        description:
+          "Small-group discussions with ESCP alumni working across the deep-tech ecosystem — their paths, their companies, and what they look for in the next generation.",
+        partner: null as string | null,
+        speakers: "ESCP alumni from the deep-tech ecosystem" as string | null,
+        audience: null as string | null,
+      },
+      "accio-work-workshop": {
+        title: "Accio Work Workshop",
+        when: "Early November",
+        time: null as string | null,
+        location: null as string | null,
+        short: "Discover Alibaba's enterprise AI agent.",
+        description: "Discover Accio Work, Alibaba's enterprise AI agent, and see how it can be used in real business workflows.",
+        partner: "Accio Work" as string | null,
+        speakers: null as string | null,
+        audience: null as string | null,
+      },
+      "macro-de-curtis-conference": {
+        title: "Macro De Curtis Video Conference",
+        when: "Mid-November",
+        time: null as string | null,
+        location: "Online" as string | null,
+        short: "Scale-up founder with BCG and Amazon experience and a Harvard MBA.",
+        description:
+          "A video conference with a scale-up founder with BCG and Amazon experience and a Harvard MBA, on building and scaling a company in the age of AI.",
+        partner: null as string | null,
+        speakers: "Macro De Curtis" as string | null,
+        audience: null as string | null,
+      },
+      "artefact-case-study": {
+        title: "Artefact Case Study",
+        when: "Late November",
+        time: null as string | null,
+        location: null as string | null,
+        short: "A real-world case study with a data and AI consultancy.",
+        description: "Work in teams on a real-world case study set by Artefact, the data and AI consultancy.",
+        partner: "Artefact" as string | null,
+        speakers: null as string | null,
+        audience: null as string | null,
+      },
+      "london-branch-launch": {
+        title: "London Branch Launch",
+        when: "January 2027",
+        time: null as string | null,
+        location: "London" as string | null,
+        short: "Expansion of the ESCP AI community to London.",
+        description: "ESCP AI expands to London, bringing the community to a fourth ESCP campus.",
+        partner: null as string | null,
+        speakers: null as string | null,
+        audience: null as string | null,
+      },
+    } as Record<
+      string,
+      {
+        title: string;
+        when: string;
+        time: string | null;
+        location: string | null;
+        short: string;
+        description: string;
+        partner: string | null;
+        speakers: string | null;
+        audience: string | null;
+      }
+    >,
+  },
+  services: {
+    title: "Turning AI ideas into practical solutions",
+    intro:
+      "ESCP AI supports students, student organisations, startups, small businesses, and companies that want to understand or implement artificial intelligence. Our approach is practical, collaborative, and focused on real needs.",
+    items: [
+      { icon: "flow", name: "AI discovery and workflow prototyping", body: "Identify repetitive tasks, explore AI applications, and prototype practical workflows." },
+      { icon: "gear", name: "AI implementation support", body: "Help companies identify opportunities to use AI more efficiently in their operations." },
+      { icon: "chalk", name: "Workshops and training", body: "Educational sessions on AI tools, applications, opportunities, and risks." },
+      { icon: "building", name: "Company visits", body: "Discover organisations using AI and explore different industries and career paths." },
+      { icon: "lightbulb", name: "Student projects", body: "Submit a real challenge to be explored by motivated ESCP students." },
+      { icon: "handshake", name: "Sponsorship and partnerships", body: "Support events, contribute expertise, access student talent, and collaborate on educational initiatives." },
+    ],
+    ctaRequest: "Request a service",
+    ctaSubmit: "Submit a project",
+    ctaMeeting: "Book a meeting",
+    ctaContact: "Contact ESCP AI",
+    ctaTitle: "Have a challenge in mind?",
+    ctaBody: "Describe what you need in a few lines. We will match it with the right division and get back to you.",
+  },
+  join: {
+    title: "Find your place in the AI community",
+    intro:
+      "You do not need to be an AI engineer to join ESCP AI. We welcome students who are curious, ambitious, collaborative, creative, business-minded, technical, or simply interested in understanding how AI will shape the future.",
+    values:
+      "There is no hazing and no ego. We value curiosity, teamwork, responsibility, and the willingness to build something useful together.",
+    valueWords: ["Curiosity", "Teamwork", "Responsibility", "Building together"],
+    gainTitle: "What members gain",
+    gains: [
+      "Access to conferences and workshops",
+      "Networking with professionals and alumni",
+      "Exposure to different AI career paths",
+      "Opportunities to work on practical projects",
+      "Collaboration with students across campuses",
+      "Technical and professional skills development",
+      "Access to community initiatives and merchandise",
+      "A platform to share ideas and build new projects",
+    ],
+    recruitmentTitle: "Recruitment",
+    recruitment:
+      "Our recruitment process is based on collaboration, creativity, and practical thinking. Candidates may be invited to work in mixed teams across communication, engineering, entrepreneurship, and finance. The objective is not simply to test what you already know about AI, but to understand how you think, build, communicate, and work with others.",
+    ctaApply: "Apply to join",
+    ctaMember: "Become a member",
+    ctaProcess: "Discover the recruitment process",
+    contactTitle: "Contact us",
+    contactBody: "Questions about membership, partnerships, or services? Reach the team directly.",
+    email: "Email",
+    instagram: "Instagram",
+    contactPending: "Our official email and Instagram will be published here shortly.",
+  },
+  shop: {
+    title: "Wear the future",
+    intro:
+      "Represent the ESCP AI community wherever innovation takes you. Discover our official merchandise, designed for students who want to show their connection to the future of artificial intelligence.",
+    note: "Members and non-members can purchase merchandise. Orders can be placed directly through the website.",
+    order: "Place an order",
+    orderSoon: "Ordering opens soon",
+    colourLabel: "Colour",
+    products: {
+      hoodie: { name: "ESCP AI Hoodie", detail: "Heavyweight hoodie with the ESCP AI mark on the chest." },
+      tshirt: { name: "ESCP AI T-shirt", detail: "Everyday cotton tee with the ESCP AI mark." },
+      cap: { name: "Embroidered Cap", detail: "Six-panel cap with an embroidered ESCP AI mark." },
+    } as Record<string, { name: string; detail: string }>,
+    colours: { black: "Black", white: "White", navy: "Navy" } as Record<string, string>,
+  },
+  login: {
+    title: "Your ESCP AI workspace",
+    body:
+      "The Member Login gives ESCP AI members access to an internal platform for organising tasks, managing projects, coordinating events, sharing documents, and working with the wider team.",
+    cta: "Log in to the member platform",
+    features: ["Tasks", "Projects", "Events", "Documents", "Team"],
+    notMember: "Not a member yet?",
+    notMemberLink: "Join ESCP AI",
+  },
+  footer: {
+    tagline: "Connecting students, companies, and the AI ecosystem.",
+    rights: "© 2026 ESCP AI. All rights reserved.",
+    explore: "Explore",
+    contact: "Contact",
+    independent: "A student-led society of ESCP Business School.",
+  },
+  notFound: {
+    title: "This page does not exist",
+    body: "The link may be out of date. Head back to the homepage to keep exploring.",
+    cta: "Back to the homepage",
+  },
+  mail: {
+    partner: "Partnership enquiry",
+    service: "Service request",
+    project: "Project submission",
+    meeting: "Meeting request",
+    apply: "Application to join ESCP AI",
+    order: "Merchandise order",
+    general: "Hello ESCP AI",
+  },
+};
+
+export default en;
+export type Dictionary = typeof en;
