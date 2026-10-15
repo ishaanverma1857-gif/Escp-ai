@@ -2,7 +2,7 @@ const en = {
   meta: {
     title: "ESCP AI — The Future of AI Starts Here",
     description:
-      "ESCP AI is the student-led society connecting students, companies, and the AI ecosystem across ESCP's Paris, Turin, and Madrid campuses.",
+      "ESCP AI is the student-led society connecting students, companies, and the AI ecosystem across ESCP's Paris, Turin, Madrid, and Berlin campuses.",
   },
   nav: {
     home: "Home",
@@ -32,17 +32,18 @@ const en = {
     paris: "Paris",
     turin: "Turin",
     madrid: "Madrid",
+    berlin: "Berlin",
     london: "London",
     londonNote: "Opening January 2027",
     mapLabel:
-      "Map connecting ESCP AI's campuses in Paris, Turin and Madrid, with London shown as an upcoming branch.",
+      "Map connecting ESCP AI's campuses in Paris, Turin, Madrid and Berlin, with London shown as an upcoming branch.",
   },
   home: {
     kicker: "ESCP's inter-campus AI society",
     heroTitle: ["The future of AI", "starts here."],
     formats: ["Events", "Workshops", "AI Days", "Community"],
     heroBody:
-      "ESCP AI connects students, companies, and the wider artificial intelligence ecosystem across Paris, Turin, and Madrid. We make AI accessible, practical, and professionally valuable for every ESCP student — whether you are already technical or simply curious about how AI can shape your future.",
+      "ESCP AI connects students, companies, and the wider artificial intelligence ecosystem across Paris, Turin, Madrid, and Berlin. We make AI accessible, practical, and professionally valuable for every ESCP student — whether you are already technical or simply curious about how AI can shape your future.",
     ctaEvents: "Discover our events",
     ctaJoin: "Join ESCP AI",
     ctaServices: "Explore our services",
@@ -114,7 +115,7 @@ const en = {
     ],
     campusesTitle: "Across campuses",
     campusesBody:
-      "ESCP AI connects the ESCP campuses of Paris, Turin, and Madrid. Campus representatives will be announced soon.",
+      "ESCP AI connects the ESCP campuses of Paris, Turin, Madrid, and Berlin. Campus representatives will be announced soon.",
     representative: "Campus representative",
   },
   partners: {

@@ -212,7 +212,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                     <span className="mt-4 block text-lg text-paper/75">{home.impactLabels[s.key]}</span>
                     {s.key === "campuses" && (
                       <span className="mt-1 block text-lg text-signal-on-ink">
-                        {dict.campuses.paris}, {dict.campuses.turin}, {dict.campuses.madrid}
+                        {dict.campuses.paris}, {dict.campuses.turin}, {dict.campuses.madrid}, {dict.campuses.berlin}
                       </span>
                     )}
                   </dd>

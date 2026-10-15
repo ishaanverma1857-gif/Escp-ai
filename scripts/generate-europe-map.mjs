@@ -16,12 +16,12 @@ const topo = JSON.parse(readFileSync(require.resolve("world-atlas/countries-50m.
 const out = process.argv[2] ?? new URL("../components/europe-map.ts", import.meta.url).pathname;
 
 // Equirectangular, with longitudes compressed by cos(46°) so shapes look right at this latitude.
-const LON_MIN = -10.5;
-const LAT_MAX = 56;
-const SCALE = 28; // px per degree of latitude
+const LON_MIN = -10;
+const LAT_MAX = 56.5;
+const SCALE = 25.5; // px per degree of latitude
 const COS = Math.cos((46 * Math.PI) / 180);
 const W = 480;
-const H = 560;
+const H = 530;
 
 const projection = geoProjection((l, p) => [l * COS, p])
   .scale((SCALE * 180) / Math.PI)
@@ -31,7 +31,7 @@ const projection = geoProjection((l, p) => [l * COS, p])
 const path = geoPath(projection).digits(1);
 
 const countries = topo.objects.countries;
-const highlight = { france: "250", spain: "724", italy: "380", uk: "826" };
+const highlight = { france: "250", spain: "724", italy: "380", germany: "276", uk: "826" };
 
 const land = path(merge(topo, countries.geometries));
 const borders = path(mesh(topo, countries, (a, b) => a !== b));

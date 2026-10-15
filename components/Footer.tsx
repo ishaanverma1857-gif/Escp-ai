@@ -27,7 +27,7 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
         <div className="md:col-span-6">
           <p className="max-w-[24ch] font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.4rem)] font-semibold leading-[1.15]">{footer.tagline}</p>
           <ul className="mt-8 flex gap-6 text-paper/70">
-            {(["paris", "turin", "madrid"] as const).map((c) => (
+            {(["paris", "turin", "madrid", "berlin"] as const).map((c) => (
               <li key={c}>{campuses[c]}</li>
             ))}
           </ul>

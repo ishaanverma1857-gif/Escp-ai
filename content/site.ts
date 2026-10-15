@@ -26,13 +26,13 @@ export const impact: { key: string; value: number | null; suffix?: string }[] = 
   { key: "community", value: 1200, suffix: "+" },
   { key: "events", value: null, suffix: "+" },
   { key: "members", value: null, suffix: "+" },
-  { key: "campuses", value: 3 },
+  { key: "campuses", value: 4 },
   { key: "companies", value: null },
   { key: "projects", value: null },
 ];
 
 export type Campus = {
-  key: "paris" | "turin" | "madrid" | "london";
+  key: "paris" | "turin" | "madrid" | "berlin" | "london";
   lat: number;
   lon: number;
   /** London is the planned January 2027 branch, drawn as a future node. */
@@ -43,6 +43,7 @@ export const campuses: Campus[] = [
   { key: "paris", lat: 48.8566, lon: 2.3522 },
   { key: "turin", lat: 45.0703, lon: 7.6869 },
   { key: "madrid", lat: 40.4168, lon: -3.7038 },
+  { key: "berlin", lat: 52.52, lon: 13.405 },
   { key: "london", lat: 51.5072, lon: -0.1276, upcoming: true },
 ];
 

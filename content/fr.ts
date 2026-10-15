@@ -4,7 +4,7 @@ const fr: Dictionary = {
   meta: {
     title: "ESCP AI — Le futur de l'intelligence artificielle commence ici",
     description:
-      "ESCP AI est l'association étudiante qui connecte les étudiants, les entreprises et l'écosystème de l'IA sur les campus ESCP de Paris, Turin et Madrid.",
+      "ESCP AI est l'association étudiante qui connecte les étudiants, les entreprises et l'écosystème de l'IA sur les campus ESCP de Paris, Turin, Madrid et Berlin.",
   },
   nav: {
     home: "Accueil",
@@ -34,17 +34,18 @@ const fr: Dictionary = {
     paris: "Paris",
     turin: "Turin",
     madrid: "Madrid",
+    berlin: "Berlin",
     london: "Londres",
     londonNote: "Ouverture en janvier 2027",
     mapLabel:
-      "Carte reliant les campus ESCP AI de Paris, Turin et Madrid, avec Londres comme prochaine antenne.",
+      "Carte reliant les campus ESCP AI de Paris, Turin, Madrid et Berlin, avec Londres comme prochaine antenne.",
   },
   home: {
     kicker: "L'association IA inter-campus d'ESCP",
     heroTitle: ["Le futur de l'IA", "commence ici."],
     formats: ["Événements", "Ateliers", "AI Days", "Communauté"],
     heroBody:
-      "ESCP AI connecte les étudiants, les entreprises et l'écosystème de l'intelligence artificielle à Paris, Turin et Madrid. Nous rendons l'IA accessible, concrète et utile pour l'avenir professionnel de chaque étudiant d'ESCP — que vous soyez déjà spécialisé ou simplement curieux.",
+      "ESCP AI connecte les étudiants, les entreprises et l'écosystème de l'intelligence artificielle à Paris, Turin, Madrid et Berlin. Nous rendons l'IA accessible, concrète et utile pour l'avenir professionnel de chaque étudiant d'ESCP — que vous soyez déjà spécialisé ou simplement curieux.",
     ctaEvents: "Découvrir nos événements",
     ctaJoin: "Rejoindre ESCP AI",
     ctaServices: "Découvrir nos services",
@@ -116,7 +117,7 @@ const fr: Dictionary = {
     ],
     campusesTitle: "Sur tous les campus",
     campusesBody:
-      "ESCP AI relie les campus d'ESCP à Paris, Turin et Madrid. Les représentants de chaque campus seront annoncés prochainement.",
+      "ESCP AI relie les campus d'ESCP à Paris, Turin, Madrid et Berlin. Les représentants de chaque campus seront annoncés prochainement.",
     representative: "Représentant du campus",
   },
   partners: {

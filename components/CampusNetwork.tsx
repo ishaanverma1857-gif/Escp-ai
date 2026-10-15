@@ -29,7 +29,7 @@ function arc(a: { x: number; y: number }, b: { x: number; y: number }, bend = 0.
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-type Labels = Record<"paris" | "turin" | "madrid" | "london" | "londonNote" | "mapLabel", string>;
+type Labels = Record<"paris" | "turin" | "madrid" | "berlin" | "london" | "londonNote" | "mapLabel", string>;
 
 export default function CampusNetwork({ labels }: { labels: Labels }) {
   const reduce = useReducedMotion();
@@ -40,16 +40,19 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
     { id: "paris-turin", d: arc(p.paris, p.turin, 0.18) },
     { id: "turin-madrid", d: arc(p.turin, p.madrid, 0.16) },
     { id: "madrid-paris", d: arc(p.madrid, p.paris, 0.2) },
+    { id: "paris-berlin", d: arc(p.paris, p.berlin, -0.16) },
+    { id: "berlin-turin", d: arc(p.berlin, p.turin, -0.14) },
   ];
   const future = arc(p.paris, p.london, -0.25);
 
-  const meridians = [-8, -4, 0, 4, 8, 12];
+  const meridians = [-8, -4, 0, 4, 8, 12, 16];
   const parallels = [38, 42, 46, 50, 54];
 
   const labelPos: Record<Campus["key"], { dx: number; dy: number; anchor: "start" | "end" }> = {
     paris: { dx: 16, dy: -8, anchor: "start" },
     turin: { dx: 16, dy: 26, anchor: "start" },
     madrid: { dx: -16, dy: 30, anchor: "end" },
+    berlin: { dx: -16, dy: -16, anchor: "end" },
     london: { dx: -14, dy: -14, anchor: "end" },
   };
 
@@ -66,8 +69,8 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
     >
       <defs>
         {/* Soft edges so the map melts into the page instead of ending in a hard box. */}
-        <radialGradient id="map-fade" cx="50%" cy="50%" r="58%">
-          <stop offset="62%" stopColor="#fff" />
+        <radialGradient id="map-fade" cx="50%" cy="50%" r="62%">
+          <stop offset="70%" stopColor="#fff" />
           <stop offset="100%" stopColor="#000" />
         </radialGradient>
         <mask id="map-mask" maskUnits="userSpaceOnUse" x="-20" y="-10" width={W + 40} height={H + 20}>
@@ -142,8 +145,8 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
       {!reduce &&
         links.map((l, i) => (
           <circle key={`pulse-${l.id}`} r="3.5" fill="var(--color-signal)" opacity="0">
-            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="3.6s" begin={`${d0 + 2.2 + i * 1.2}s`} repeatCount="indefinite" />
-            <animateMotion dur="3.6s" begin={`${d0 + 2.2 + i * 1.2}s`} repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.45 0 0.25 1">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="3.6s" begin={`${d0 + 2.2 + i * 0.72}s`} repeatCount="indefinite" />
+            <animateMotion dur="3.6s" begin={`${d0 + 2.2 + i * 0.72}s`} repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.45 0 0.25 1">
               <mpath href={`#${l.id}`} />
             </animateMotion>
           </circle>

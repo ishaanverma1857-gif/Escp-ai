@@ -104,7 +104,7 @@ export default async function TeamPage({ params }: PageProps<"/[lang]/team">) {
               <p className="text-lead text-paper/80">{t.campusesBody}</p>
             </Reveal>
           </div>
-          <Stagger className="mt-16 grid gap-px overflow-hidden rounded-[1.5rem] bg-paper/15 sm:grid-cols-3">
+          <Stagger className="mt-16 grid gap-px overflow-hidden rounded-[1.5rem] bg-paper/15 sm:grid-cols-2 lg:grid-cols-4">
             {campuses
               .filter((c) => !c.upcoming)
               .map((c) => (
