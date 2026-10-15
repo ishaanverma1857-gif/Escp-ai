@@ -10,7 +10,11 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * page for about a second, so entrance animations wait for it to lift.
  */
 export const introState = { first: true };
-export const entryDelay = () => (introState.first ? 1.05 : 0.4);
+const HOME = /^\/(en|fr)\/?$/;
+/** True while the very first page load is the homepage, i.e. the only time the intro curtain plays. */
+export const isIntro = (pathname: string) => introState.first && HOME.test(pathname);
+export const entryDelay = () =>
+  typeof window !== "undefined" && isIntro(window.location.pathname) ? 1.05 : 0.15;
 
 /** Respects the OS "reduce motion" setting for every Motion animation below it. */
 export function MotionProvider({ children }: { children: ReactNode }) {

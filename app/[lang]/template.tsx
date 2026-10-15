@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import { introState } from "@/components/motion";
+import { usePathname } from "next/navigation";
+import { introState, isIntro } from "@/components/motion";
 import { Knot } from "@/components/brand";
 
-// The first render of the session plays the longer intro; later navigations use a quick wipe.
+/*
+ * The intro curtain plays only when the homepage is loaded fresh (first visit or a reload).
+ * Moving between pages inside the site never shows it: the next page simply fades in.
+ */
 export default function Template({ children }: { children: React.ReactNode }) {
-  const intro = introState.first;
+  const pathname = usePathname();
+  const intro = isIntro(pathname);
+
   useEffect(() => {
     introState.first = false;
   }, []);
@@ -14,10 +20,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* Pure CSS, so the page can never get stuck behind the curtain if scripts fail. */}
-      <div aria-hidden="true" className={`curtain ${intro ? "curtain--intro" : "curtain--nav"}`}>
-        <Knot draw gap="var(--color-ink)" className="curtain-mark" />
-        <span className="curtain-word">ESCP | AI</span>
-      </div>
+      {intro && (
+        <div aria-hidden="true" className="curtain curtain--intro">
+          <Knot draw gap="var(--color-ink)" className="curtain-mark" />
+          <span className="curtain-word">ESCP | AI</span>
+        </div>
+      )}
       <div className={intro ? "page-enter page-enter--intro" : "page-enter"}>{children}</div>
     </>
   );
