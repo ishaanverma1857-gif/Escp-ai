@@ -6,13 +6,13 @@ import {
   motion,
   useAnimationFrame,
   useMotionValue,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   useVelocity,
   wrap,
-  type MotionValue,
 } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -48,7 +48,7 @@ export function SmoothScroll() {
 
   useEffect(() => {
     if (reduce) return;
-    const lenis = new Lenis({ lerp: 0.11, anchors: { offset: -96 }, autoRaf: true });
+    const lenis = new Lenis({ lerp: 0.16, anchors: { offset: -96 }, autoRaf: true });
     window.__lenis = lenis;
     return () => {
       lenis.destroy();
@@ -107,111 +107,92 @@ export function FlowLines({
   preset?: keyof typeof RIBBONS;
   className?: string;
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduce = useReducedMotion();
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [src, setSrc] = useState<string | null>(null);
 
+  // Draw once per size into an offscreen canvas and show the result as a plain image:
+  // images cost nothing to keep on screen or move, unlike live canvases.
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx) return;
+    const box = boxRef.current;
+    if (!box) return;
+    let url: string | null = null;
+    let cancelled = false;
+    let lastW = 0;
 
-    let w = 0;
-    let h = 0;
-    let raf = 0;
-    let visible = true;
-    let t = Math.random() * 100;
-    let last = performance.now();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const pointer = { x: -9999, y: -9999, strength: 0, target: 0 };
-    const ribbons = RIBBONS[preset];
-    const rgb = tone === "light" ? "34,65,168" : "122,150,255";
-    const baseAlpha = tone === "light" ? 0.15 : 0.22;
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
+    const render = () => {
+      const rect = box.getBoundingClientRect();
+      if (rect.width < 1 || Math.abs(rect.width - lastW) < 40) return;
+      lastW = rect.width;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const w = rect.width;
+      const h = rect.height;
+      const canvas = document.createElement("canvas");
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineWidth = 1;
+      drawRibbons(ctx, w, h, RIBBONS[preset], tone);
+      canvas.toBlob((blob) => {
+        if (!blob || cancelled) return;
+        if (url) URL.revokeObjectURL(url);
+        url = URL.createObjectURL(blob);
+        setSrc(url);
+      });
     };
 
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = 1;
-      const step = w < 640 ? 14 : 10;
-      const sigma = Math.min(w, h) * 0.14;
-      for (const r of ribbons) {
-        for (let i = 0; i < r.lines; i++) {
-          const k = i / (r.lines - 1) - 0.5;
-          // Lines near the centre of the ribbon are a touch stronger.
-          ctx.strokeStyle = `rgba(${rgb},${baseAlpha * (1 - Math.abs(k) * 0.9)})`;
-          ctx.beginPath();
-          for (let x = -step; x <= w + step; x += step) {
-            const u = x / w;
-            const centre =
-              h * (r.y + r.tilt * (u - 0.5) * 0.4) +
-              h * r.amp * Math.sin(u * Math.PI * r.freq + t * r.speed * 6 + r.phase) +
-              h * r.amp * 0.35 * Math.sin(u * Math.PI * r.freq * 2.3 - t * r.speed * 4 + r.phase * 1.7);
-            // The ribbon pinches and fans out along its length, like twisted contour lines.
-            const fan = 0.35 + 0.65 * Math.abs(Math.sin(u * Math.PI * 1.4 + t * r.speed * 3 + r.phase));
-            let y = centre + k * h * r.spread * fan;
-            if (pointer.strength > 0.01) {
-              const dx = x - pointer.x;
-              const dy = y - pointer.y;
-              const fall = Math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma));
-              y += Math.sign(dy || 1) * fall * 46 * pointer.strength;
-            }
-            if (x === -step) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
+    render();
+    const ro = new ResizeObserver(render);
+    ro.observe(box);
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [tone, preset]);
+
+  return (
+    <div ref={boxRef} aria-hidden="true" className={`pointer-events-none absolute inset-0 ${className}`}>
+      {src && (
+        // eslint-disable-next-line @next/next/no-img-element -- generated in the browser, nothing to optimise
+        <img src={src} alt="" className="flow-drift block h-full w-full select-none" draggable={false} />
+      )}
+    </div>
+  );
+}
+
+function drawRibbons(ctx: CanvasRenderingContext2D, w: number, h: number, ribbons: Ribbon[], tone: "light" | "dark") {
+  const rgb = tone === "light" ? "34,65,168" : "122,150,255";
+  const baseAlpha = tone === "light" ? 0.17 : 0.24;
+  const step = w < 640 ? 14 : 10;
+  const t = 7;
+  const BUCKETS = 5;
+  for (const r of ribbons) {
+    const lines = Math.round(r.lines * (w < 640 ? 0.6 : 0.85));
+    // Lines are grouped by opacity so each group is stroked in one call.
+    for (let bucket = 0; bucket < BUCKETS; bucket++) {
+      ctx.strokeStyle = `rgba(${rgb},${baseAlpha * (1 - (bucket / BUCKETS) * 0.85)})`;
+      ctx.beginPath();
+      for (let i = 0; i < lines; i++) {
+        const k = i / (lines - 1) - 0.5;
+        if (Math.min(BUCKETS - 1, Math.floor(Math.abs(k) * 2 * BUCKETS)) !== bucket) continue;
+        for (let x = -step; x <= w + step; x += step) {
+          const u = x / w;
+          const centre =
+            h * (r.y + r.tilt * (u - 0.5) * 0.4) +
+            h * r.amp * Math.sin(u * Math.PI * r.freq + t * r.speed * 6 + r.phase) +
+            h * r.amp * 0.35 * Math.sin(u * Math.PI * r.freq * 2.3 - t * r.speed * 4 + r.phase * 1.7);
+          // The ribbon pinches and fans out along its length, like twisted contour lines.
+          const fan = 0.35 + 0.65 * Math.abs(Math.sin(u * Math.PI * 1.4 + t * r.speed * 3 + r.phase));
+          const y = centre + k * h * r.spread * fan;
+          if (x === -step) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
       }
-    };
-
-    const loop = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      if (visible) {
-        t += dt;
-        pointer.strength += (pointer.target - pointer.strength) * 0.08;
-        draw();
-      }
-      raf = requestAnimationFrame(loop);
-    };
-
-    resize();
-    if (reduce) draw();
-    else raf = requestAnimationFrame(loop);
-
-    const ro = new ResizeObserver(() => {
-      resize();
-      if (reduce) draw();
-    });
-    ro.observe(canvas);
-    const io = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting));
-    io.observe(canvas);
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") return;
-      const rect = canvas.getBoundingClientRect();
-      pointer.x = e.clientX - rect.left;
-      pointer.y = e.clientY - rect.top;
-      pointer.target = pointer.y > 0 && pointer.y < rect.height ? 1 : 0;
-    };
-    const onLeave = () => (pointer.target = 0);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerleave", onLeave);
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      io.disconnect();
-      window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerleave", onLeave);
-    };
-  }, [reduce, tone, preset]);
-
-  return <canvas ref={canvasRef} aria-hidden="true" className={`pointer-events-none absolute inset-0 block h-full w-full ${className}`} />;
+      ctx.stroke();
+    }
+  }
 }
 
 /** Arc of dots, a recurring motif in the ESCP AI visuals. Dots appear one by one when scrolled into view. */
@@ -270,7 +251,7 @@ export function Countdown({ to, labels }: { to: string; labels: { days: string; 
   return (
     <div className="flex gap-3 sm:gap-4" role="timer" aria-live="off">
       {parts.map((p) => (
-        <div key={p.l} className="min-w-[4.25rem] rounded-2xl bg-paper/10 px-3 py-2.5 text-center ring-1 ring-paper/20 backdrop-blur-sm">
+        <div key={p.l} className="min-w-[4.25rem] rounded-2xl bg-paper/10 px-3 py-2.5 text-center ring-1 ring-paper/20">
           <span className="block font-display text-[1.9rem] font-extrabold leading-none tabular-nums">{String(p.v).padStart(2, "0")}</span>
           <span className="mt-1 block text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-75">{p.l}</span>
         </div>
@@ -283,25 +264,21 @@ export function Countdown({ to, labels }: { to: string; labels: { days: string; 
 /* Text that lights up word by word as you scroll                       */
 /* ------------------------------------------------------------------ */
 
-function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.14, 1]);
-  return (
-    <span className="relative">
-      <motion.span style={{ opacity }}>{children}</motion.span>{" "}
-    </span>
-  );
-}
-
 export function ScrollText({ text, className = "" }: { text: string; className?: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.5"] });
   const words = text.split(" ");
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    ref.current?.style.setProperty("--lit", String(v * words.length));
+  });
+
   return (
-    <p ref={ref} className={className}>
+    <p ref={ref} className={className} style={{ "--lit": "0" } as React.CSSProperties}>
       {words.map((w, i) => (
-        <Word key={i} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
-          {w}
-        </Word>
+        <span key={i} className="scroll-word" style={{ "--i": i } as React.CSSProperties}>
+          {w}{" "}
+        </span>
       ))}
     </p>
   );

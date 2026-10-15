@@ -316,7 +316,6 @@
 .orb {
   border-radius: 9999px;
   background: radial-gradient(circle at 38% 42%, #8ea8ff 0%, #3c64f0 32%, rgba(60, 100, 240, 0.35) 52%, transparent 70%);
-  filter: blur(6px);
   animation: orb-float 9s ease-in-out infinite;
 }
 
@@ -340,5 +339,35 @@
   .orb,
   .orb-ring {
     animation: none;
+  }
+}
+
+/* Static flow lines drift slowly; only a transform, so it stays on the GPU. */
+.flow-drift {
+  animation: flow-drift 18s ease-in-out infinite alternate;
+  transform-origin: 50% 50%;
+}
+
+@keyframes flow-drift {
+  from {
+    transform: translate3d(-1.5%, 0, 0) scale(1.04);
+  }
+  to {
+    transform: translate3d(1.5%, -1%, 0) scale(1.06);
+  }
+}
+
+/* Each word reaches full strength as the --lit counter passes its index. */
+.scroll-word {
+  opacity: clamp(0.14, calc(var(--lit) - var(--i)), 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-drift {
+    animation: none;
+  }
+
+  .scroll-word {
+    opacity: 1;
   }
 }

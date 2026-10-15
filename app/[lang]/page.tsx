@@ -32,7 +32,11 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden pt-28 md:pt-36 lg:min-h-[min(100dvh,62rem)]">
-        <FlowLines tone="light" preset="hero" />
+        <PointerParallax depth={4} className="absolute inset-[-3%]">
+          <div className="relative h-[106dvh] max-h-[66rem] min-h-[44rem] w-full">
+            <FlowLines tone="light" preset="hero" />
+          </div>
+        </PointerParallax>
         <DottedArc className="absolute right-[6%] top-24 hidden w-40 text-royal/60 md:block" rotate={-80} sweep={75} />
         <DottedArc className="absolute bottom-16 left-[3%] w-28 text-royal/50" rotate={110} sweep={70} dots={8} />
         <div className="container-site relative grid items-center gap-y-12 pb-20 lg:grid-cols-12 lg:gap-x-8 lg:pb-28">
@@ -56,7 +60,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             <FadeIn delay={0.8}>
               <ul className="mt-12 flex flex-wrap gap-2.5">
                 {home.formats.map((f) => (
-                  <li key={f} className="rounded-full border border-royal/20 bg-paper/70 px-4 py-1.5 text-sm font-bold text-royal backdrop-blur-sm">
+                  <li key={f} className="rounded-full border border-royal/20 bg-paper/80 px-4 py-1.5 text-sm font-bold text-royal">
                     {f}
                   </li>
                 ))}

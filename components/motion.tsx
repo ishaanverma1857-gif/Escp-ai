@@ -124,7 +124,7 @@ export function MaskedLines({
               <Fragment key={wi}>
               <span className="-mb-[0.12em] inline-block overflow-hidden pb-[0.12em] align-bottom">
                 <motion.span
-                  className="inline-block origin-bottom-left will-change-transform"
+                  className="inline-block origin-bottom-left"
                   variants={{
                     hidden: { y: "110%", rotate: 7 },
                     show: { y: 0, rotate: 0, transition: { duration: 1, ease: EASE, delay: start + i * 0.07 } },

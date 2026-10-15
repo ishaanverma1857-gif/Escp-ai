@@ -82,7 +82,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
       <header
         onFocusCapture={() => setHidden(false)}
         className={`fixed inset-x-0 top-0 z-[55] transition-[background-color,box-shadow,backdrop-filter,translate] duration-500 ease-[var(--ease-out-quint)] ${
-          scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-md" : "bg-transparent"
+          scrolled && !open ? "bg-paper/95 shadow-[0_1px_0_var(--color-line)]" : "bg-transparent"
         } ${hidden && !open ? "-translate-y-full" : "translate-y-0"}`}
       >
         <div className="container-site flex h-[4.5rem] items-center justify-between gap-6">
