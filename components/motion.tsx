@@ -1,9 +1,16 @@
 "use client";
 
 import { MotionConfig, motion, useInView, useReducedMotion, animate } from "motion/react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * Shared with the page template: on the first load the intro curtain covers the
+ * page for about a second, so entrance animations wait for it to lift.
+ */
+export const introState = { first: true };
+export const entryDelay = () => (introState.first ? 1.05 : 0.4);
 
 /** Respects the OS "reduce motion" setting for every Motion animation below it. */
 export function MotionProvider({ children }: { children: ReactNode }) {
@@ -83,31 +90,52 @@ export function StaggerItem({
   );
 }
 
-/** Headline whose lines rise out of a mask, one after another. */
+/**
+ * Headline whose words rise out of a mask one after another.
+ * With `inView` it plays when scrolled into view instead of on page load.
+ */
 export function MaskedLines({
   lines,
   className,
   as = "h1",
-  delay = 0.1,
+  delay = 0,
+  inView = false,
 }: {
   lines: string[];
   className?: string;
-  as?: "h1" | "h2";
+  as?: "h1" | "h2" | "h3";
   delay?: number;
+  inView?: boolean;
 }) {
-  const Tag = as;
+  const Tag = motion[as];
+  const start = (inView ? 0 : entryDelay()) + delay;
+  let index = 0;
+  const trigger = inView
+    ? { initial: "hidden", whileInView: "show", viewport: { once: true, amount: 0.4 } }
+    : { initial: "hidden", animate: "show" };
+
   return (
-    <Tag className={className}>
-      {lines.map((line, i) => (
-        <span key={i} className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
-          <motion.span
-            className="block will-change-transform"
-            initial={{ y: "105%" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 1.1, ease: EASE, delay: delay + i * 0.12 }}
-          >
-            {line}
-          </motion.span>
+    <Tag className={className} {...trigger}>
+      {lines.map((line, li) => (
+        <span key={li} className="block">
+          {line.split(" ").map((word, wi) => {
+            const i = index++;
+            return (
+              <Fragment key={wi}>
+              <span className="-mb-[0.12em] inline-block overflow-hidden pb-[0.12em] align-bottom">
+                <motion.span
+                  className="inline-block origin-bottom-left will-change-transform"
+                  variants={{
+                    hidden: { y: "110%", rotate: 7 },
+                    show: { y: 0, rotate: 0, transition: { duration: 1, ease: EASE, delay: start + i * 0.07 } },
+                  }}
+                >
+                  {word}
+                </motion.span>
+              </span>{" "}
+              </Fragment>
+            );
+          })}
         </span>
       ))}
     </Tag>
@@ -116,12 +144,13 @@ export function MaskedLines({
 
 /** Simple fade + rise on mount, for content right under a page title. */
 export function FadeIn({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  const start = entryDelay() + delay;
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9, ease: EASE, delay }}
+      transition={{ duration: 0.9, ease: EASE, delay: start }}
     >
       {children}
     </motion.div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Magnetic } from "./fx";
 
 /** Three linked nodes — the campuses — beside the society name. */
 export function Logo({ className = "" }: { className?: string }) {
@@ -19,8 +20,10 @@ export function Logo({ className = "" }: { className?: string }) {
 type ButtonVariant = "primary" | "secondary" | "quiet" | "onInk" | "onInkOutline";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-ink text-paper hover:bg-signal-deep",
-  secondary: "border border-ink/25 text-ink hover:border-ink hover:bg-ink hover:text-paper",
+  primary:
+    "relative overflow-hidden bg-ink text-paper before:absolute before:inset-0 before:translate-y-full before:rounded-full before:bg-signal before:transition-transform before:duration-500 before:ease-[var(--ease-out-quint)] hover:before:translate-y-0",
+  secondary:
+    "relative overflow-hidden border border-ink/25 text-ink transition-[color,border-color] before:absolute before:inset-0 before:translate-y-full before:rounded-full before:bg-ink before:transition-transform before:duration-500 before:ease-[var(--ease-out-quint)] hover:border-ink hover:text-paper hover:before:translate-y-0",
   quiet: "text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-signal px-0! min-h-0!",
   onInk: "bg-paper text-ink hover:bg-signal-soft",
   onInkOutline: "border border-paper/35 text-paper hover:border-paper hover:bg-paper hover:text-ink",
@@ -58,18 +61,17 @@ export function Button({
     );
   }
   const external = /^(https?:|mailto:)/.test(href);
-  if (external) {
-    return (
-      <a href={href} className={cls} {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-        {children}
-      </a>
-    );
-  }
-  return (
+  const inner = <span className="relative z-10 inline-flex items-center gap-2">{children}</span>;
+  const link = external ? (
+    <a href={href} className={cls} {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+      {inner}
+    </a>
+  ) : (
     <Link href={href} className={cls}>
-      {children}
+      {inner}
     </Link>
   );
+  return variant === "quiet" ? link : <Magnetic className={className.includes("w-full") ? "w-full" : ""}>{link}</Magnetic>;
 }
 
 export function SectionHeading({ children, className = "" }: { children: ReactNode; className?: string }) {

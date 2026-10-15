@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./ui";
+import { Magnetic } from "./fx";
 import type { Locale } from "@/lib/i18n";
 import type { Dictionary } from "@/content/en";
 
@@ -14,6 +15,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const firstLink = useRef<HTMLAnchorElement>(null);
 
@@ -31,7 +33,15 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
   const switchHref = `/${locale === "en" ? "fr" : "en"}${rest ? `/${rest}` : ""}`;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 12);
+      if (Math.abs(y - last) > 6) {
+        setHidden(y > last && y > 320);
+        last = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -70,9 +80,10 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
         {nav.skip}
       </a>
       <header
-        className={`fixed inset-x-0 top-0 z-[55] transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
+        onFocusCapture={() => setHidden(false)}
+        className={`fixed inset-x-0 top-0 z-[55] transition-[background-color,box-shadow,backdrop-filter,translate] duration-500 ease-[var(--ease-out-quint)] ${
           scrolled && !open ? "bg-paper/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-md" : "bg-transparent"
-        }`}
+        } ${hidden && !open ? "-translate-y-full" : "translate-y-0"}`}
       >
         <div className="container-site flex h-[4.5rem] items-center justify-between gap-6">
           <Link
@@ -113,12 +124,14 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline text-[0.95rem] text-ink/80 hover:text-ink">
               {nav.login}
             </Link>
+            <Magnetic>
             <Link
               href={`/${locale}/join`}
               className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-signal-deep"
             >
               {nav.join}
             </Link>
+            </Magnetic>
           </div>
 
           <button

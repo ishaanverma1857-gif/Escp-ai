@@ -4,7 +4,7 @@ import { contactHref, getDictionary, hasLocale } from "@/lib/i18n";
 import { site } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem, MaskedLines } from "@/components/motion";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/join">): Promise<Metadata> {
   const { lang } = await params;
@@ -48,9 +48,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
       {/* Benefits */}
       <section className="py-24 md:py-32">
         <div className="container-site grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <h2 className="text-h2">{j.gainTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[j.gainTitle]} className="text-h2 md:col-span-4" />
           <Stagger className="grid gap-x-10 sm:grid-cols-2 md:col-span-8" gap={0.05}>
             {j.gains.map((g) => (
               <StaggerItem key={g} className="flex gap-4 border-t border-line py-5 text-lead">
@@ -67,9 +65,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
       {/* Recruitment */}
       <section id="recruitment" className="border-t border-line bg-fog/60 py-24 md:py-32">
         <div className="container-site grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <h2 className="text-h2">{j.recruitmentTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[j.recruitmentTitle]} className="text-h2 md:col-span-4" />
           <Reveal delay={0.1} className="md:col-span-8">
             <p className="max-w-[62ch] font-display text-[clamp(1.35rem,1.15rem+0.8vw,1.85rem)] leading-[1.45]">{j.recruitment}</p>
             <div className="mt-12 flex flex-wrap gap-4">
@@ -85,9 +81,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
       {/* Contact */}
       <section id="contact" className="py-24 md:py-32">
         <div className="container-site grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <h2 className="text-h2">{j.contactTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[j.contactTitle]} className="text-h2 md:col-span-4" />
           <Reveal delay={0.1} className="md:col-span-8">
             <p className="text-lead text-slate">{j.contactBody}</p>
             {site.email || site.instagram ? (

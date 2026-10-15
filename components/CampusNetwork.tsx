@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { campuses, type Campus } from "@/content/site";
+import { entryDelay } from "./motion";
 
 /*
  * A small cartographic view of western Europe that links the ESCP AI
@@ -36,6 +37,7 @@ type Labels = Record<"paris" | "turin" | "madrid" | "london" | "londonNote" | "m
 
 export default function CampusNetwork({ labels }: { labels: Labels }) {
   const reduce = useReducedMotion();
+  const d0 = entryDelay() - 0.2;
   const p = Object.fromEntries(campuses.map((c) => [c.key, project(c)])) as Record<Campus["key"], { x: number; y: number }>;
 
   const links = [
@@ -89,7 +91,7 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
           strokeLinecap="round"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.6, ease: EASE, delay: 0.7 + i * 0.25 }}
+          transition={{ duration: 1.6, ease: EASE, delay: d0 + 0.6 + i * 0.25 }}
         />
       ))}
 
@@ -103,15 +105,15 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
         strokeLinecap="round"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.9 }}
+        transition={{ duration: 1, delay: d0 + 1.6 }}
       />
 
       {/* Signals travelling between campuses */}
       {!reduce &&
         links.map((l, i) => (
           <circle key={`pulse-${l.id}`} r="3.5" fill="var(--color-signal)" opacity="0">
-            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="3.6s" begin={`${2.4 + i * 1.2}s`} repeatCount="indefinite" />
-            <animateMotion dur="3.6s" begin={`${2.4 + i * 1.2}s`} repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.45 0 0.25 1">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="3.6s" begin={`${d0 + 2.2 + i * 1.2}s`} repeatCount="indefinite" />
+            <animateMotion dur="3.6s" begin={`${d0 + 2.2 + i * 1.2}s`} repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.45 0 0.25 1">
               <mpath href={`#${l.id}`} />
             </animateMotion>
           </circle>
@@ -126,7 +128,7 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
             key={c.key}
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: EASE, delay: c.upcoming ? 2 : 0.5 + i * 0.18 }}
+            transition={{ duration: 0.8, ease: EASE, delay: c.upcoming ? d0 + 1.7 : d0 + 0.3 + i * 0.18 }}
             style={{ transformOrigin: `${x}px ${y}px` }}
           >
             {!c.upcoming && !reduce && (

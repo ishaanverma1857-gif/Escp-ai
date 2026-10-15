@@ -7,7 +7,7 @@ import { sortedEvents } from "@/lib/events";
 import PageHeader from "@/components/PageHeader";
 import Timeline from "@/components/Timeline";
 import { Button } from "@/components/ui";
-import { Reveal } from "@/components/motion";
+import { Reveal, MaskedLines } from "@/components/motion";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/events">): Promise<Metadata> {
   const { lang } = await params;
@@ -33,9 +33,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
 
       <section className="pb-24 md:pb-32">
         <div className="container-site">
-          <Reveal>
-            <h2 className="text-h2">{ev.calendarTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[ev.calendarTitle]} className="text-h2" />
           <div className="mt-14">
             <Timeline>
               {sortedEvents().map((e) => {
@@ -75,9 +73,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
 
       <section className="border-t border-line bg-fog/60 py-24 md:py-32">
         <div className="container-site grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <h2 className="text-h2">{ev.recapsTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[ev.recapsTitle]} className="text-h2 md:col-span-5" />
           <Reveal delay={0.1} className="md:col-span-7">
             <p className="text-lead text-slate">{ev.recapsBody}</p>
             <div className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8">

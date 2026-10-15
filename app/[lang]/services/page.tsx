@@ -11,8 +11,9 @@ import {
 import type { Icon } from "@phosphor-icons/react";
 import { contactHref, getDictionary, hasLocale } from "@/lib/i18n";
 import PageHeader from "@/components/PageHeader";
+import { Spotlight } from "@/components/fx";
 import { Button } from "@/components/ui";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem, MaskedLines } from "@/components/motion";
 
 const icons: Record<string, Icon> = {
   flow: FlowArrow,
@@ -44,12 +45,14 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
             {s.items.map((item) => {
               const IconCmp = icons[item.icon];
               return (
-                <StaggerItem key={item.name} className="group flex flex-col bg-paper p-8 transition-colors duration-500 hover:bg-fog md:p-10">
+                <StaggerItem key={item.name} className="flex bg-paper">
+                  <Spotlight className="group flex w-full flex-col p-8 md:p-10">
                   <span className="flex h-14 w-14 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors duration-500 group-hover:border-signal group-hover:bg-signal group-hover:text-paper">
                     <IconCmp size={26} weight="light" aria-hidden="true" />
                   </span>
                   <h2 className="mt-10 text-[1.75rem] leading-[1.15]">{item.name}</h2>
                   <p className="mt-3 text-slate">{item.body}</p>
+                  </Spotlight>
                 </StaggerItem>
               );
             })}
@@ -59,9 +62,7 @@ export default async function ServicesPage({ params }: PageProps<"/[lang]/servic
 
       <section className="on-ink bg-ink py-24 text-paper md:py-32">
         <div className="container-site grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-6">
-            <h2 className="text-h1">{s.ctaTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[s.ctaTitle]} className="text-h1 md:col-span-6" />
           <Reveal delay={0.1} className="md:col-span-6 md:self-end">
             <p className="max-w-[46ch] text-lead text-paper/75">{s.ctaBody}</p>
             <div className="mt-10 flex flex-wrap gap-4">

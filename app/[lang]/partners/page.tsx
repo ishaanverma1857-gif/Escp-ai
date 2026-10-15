@@ -4,7 +4,7 @@ import { contactHref, getDictionary, hasLocale } from "@/lib/i18n";
 import { partners } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Reveal, Stagger, StaggerItem, MaskedLines } from "@/components/motion";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/partners">): Promise<Metadata> {
   const { lang } = await params;
@@ -23,9 +23,7 @@ export default async function PartnersPage({ params }: PageProps<"/[lang]/partne
 
       <section className="pb-24 md:pb-32">
         <div className="container-site">
-          <Reveal>
-            <h2 className="text-h2">{p.ecosystemTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[p.ecosystemTitle]} className="text-h2" />
           {/* Names are set in type until partner logos are approved for use. */}
           <Stagger className="mt-12 grid grid-cols-1 border-l border-t border-line sm:grid-cols-2 lg:grid-cols-3">
             {partners.map((name) => (
@@ -48,9 +46,7 @@ export default async function PartnersPage({ params }: PageProps<"/[lang]/partne
 
       <section className="border-t border-line py-24 md:py-32">
         <div className="container-site grid gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-5">
-            <h2 className="text-h2">{p.whyTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[p.whyTitle]} className="text-h2 md:col-span-5" />
           <Stagger className="md:col-span-7">
             {p.why.map((reason) => (
               <StaggerItem key={reason} className="flex gap-5 border-t border-line py-5 text-lead last:border-b">

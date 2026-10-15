@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import { campuses, team } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Spotlight } from "@/components/fx";
+import { Reveal, Stagger, StaggerItem, MaskedLines } from "@/components/motion";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/team">): Promise<Metadata> {
   const { lang } = await params;
@@ -30,9 +31,7 @@ export default async function TeamPage({ params }: PageProps<"/[lang]/team">) {
 
       <section className="pb-24 md:pb-32">
         <div className="container-site">
-          <Reveal>
-            <h2 className="text-h2">{t.leadershipTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[t.leadershipTitle]} className="text-h2" />
           <Stagger className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" gap={0.06}>
             {team.map((m) => (
               <StaggerItem key={m.name} className="group flex items-center gap-5">
@@ -72,9 +71,7 @@ export default async function TeamPage({ params }: PageProps<"/[lang]/team">) {
       <section className="on-ink bg-ink py-24 text-paper md:py-32">
         <div className="container-site">
           <div className="grid gap-8 md:grid-cols-12">
-            <Reveal className="md:col-span-5">
-              <h2 className="text-h2">{t.campusesTitle}</h2>
-            </Reveal>
+            <MaskedLines as="h2" inView lines={[t.campusesTitle]} className="text-h2 md:col-span-5" />
             <Reveal delay={0.1} className="md:col-span-7">
               <p className="text-lead text-paper/80">{t.campusesBody}</p>
             </Reveal>
@@ -83,13 +80,15 @@ export default async function TeamPage({ params }: PageProps<"/[lang]/team">) {
             {campuses
               .filter((c) => !c.upcoming)
               .map((c) => (
-                <StaggerItem key={c.key} className="bg-ink p-8 md:p-10">
+                <StaggerItem key={c.key} className="bg-ink">
+                  <Spotlight colour="rgba(157,176,255,0.16)" className="h-full p-8 md:p-10">
                   <h3 className="text-[clamp(2.5rem,2rem+2vw,3.75rem)] leading-none">{dict.campuses[c.key]}</h3>
                   <p className="mt-3 text-sm text-paper/60">
                     {c.lat.toFixed(2)}° N, {Math.abs(c.lon).toFixed(2)}° {c.lon >= 0 ? "E" : "W"}
                   </p>
                   <p className="mt-10 text-paper/70">{t.representative}</p>
                   <p className="text-signal-on-ink">{dict.common.toBeAnnounced}</p>
+                  </Spotlight>
                 </StaggerItem>
               ))}
           </Stagger>

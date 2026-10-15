@@ -4,9 +4,9 @@ import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { impact, partners } from "@/content/site";
 import { dateParts, featuredEvent, sortedEvents } from "@/lib/events";
 import CampusNetwork from "@/components/CampusNetwork";
-import Marquee from "@/components/Marquee";
 import { Button } from "@/components/ui";
 import { CountUp, FadeIn, MaskedLines, Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { NeuralField, PointerParallax, ScrollText, ScrollTriangle, Tilt, VelocityMarquee } from "@/components/fx";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -25,13 +25,16 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       {/* Hero */}
       <section className="relative overflow-hidden pt-28 md:pt-36 lg:min-h-[min(100dvh,60rem)]">
         <div aria-hidden="true" className="graticule pointer-events-none absolute inset-0" />
+        <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_60%_40%,black_20%,transparent_75%)]">
+          <NeuralField />
+        </div>
         <div className="container-site relative grid items-center gap-y-10 pb-20 lg:grid-cols-12 lg:gap-x-8 lg:pb-28">
           <div className="lg:col-span-7">
             <MaskedLines lines={home.heroTitle} className="text-display" />
-            <FadeIn delay={0.55}>
+            <FadeIn delay={0.45}>
               <p className="mt-8 max-w-[54ch] text-lead text-slate">{home.heroBody}</p>
             </FadeIn>
-            <FadeIn delay={0.7} className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-4">
+            <FadeIn delay={0.6} className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-4">
               <Button href={href(lang, "/join")}>{home.ctaJoin}</Button>
               <Button href={href(lang, "/events")} variant="secondary">
                 {home.ctaEvents}
@@ -42,7 +45,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             </FadeIn>
           </div>
           <div className="mx-auto w-full max-w-[26rem] sm:max-w-[30rem] lg:col-span-5 lg:max-w-none">
-            <CampusNetwork labels={dict.campuses} />
+            <PointerParallax depth={14}>
+              <CampusNetwork labels={dict.campuses} />
+            </PointerParallax>
           </div>
         </div>
       </section>
@@ -50,13 +55,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       {/* Mission */}
       <section className="border-t border-line py-24 md:py-36">
         <div className="container-site grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <h2 className="text-h2">{home.missionTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[home.missionTitle]} className="text-h2 md:col-span-4" />
           <div className="md:col-span-8">
-            <Reveal delay={0.1}>
-              <p className="font-display text-[clamp(1.45rem,1.15rem+1.2vw,2.15rem)] leading-[1.35] text-ink">{home.missionBody}</p>
-            </Reveal>
+            <ScrollText text={home.missionBody} className="font-display text-[clamp(1.6rem,1.2rem+1.5vw,2.6rem)] leading-[1.3] text-ink" />
             <Stagger className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-8">
               {home.pillars.map((p) => (
                 <StaggerItem key={p.title} className="border-t-2 border-ink pt-5">
@@ -70,11 +71,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       </section>
 
       {/* Impact */}
-      <section className="on-ink bg-ink py-24 text-paper md:py-32">
-        <div className="container-site grid gap-14 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
-            <h2 className="text-h2">{home.impactTitle}</h2>
-          </Reveal>
+      <section className="on-ink relative overflow-hidden bg-ink py-24 text-paper md:py-32">
+        <ScrollTriangle className="pointer-events-none absolute -right-24 top-1/2 w-[34rem] -translate-y-1/2 text-paper/20 md:right-0 md:w-[40rem]" />
+        <div className="container-site relative grid gap-14 md:grid-cols-12">
+          <MaskedLines as="h2" inView lines={[home.impactTitle]} className="text-h2 md:col-span-4" />
           <div className="md:col-span-8">
             <dl className="grid gap-12 sm:grid-cols-2">
               {stats.map((s, i) => (
@@ -104,10 +104,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       {/* Featured event */}
       <section className="py-24 md:py-32">
         <div className="container-site">
-          <Reveal>
-            <h2 className="text-h2">{home.featuredTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[home.featuredTitle]} className="text-h2" />
           <Reveal delay={0.1} className="mt-10">
+            <Tilt max={4}>
             <article className="group grid overflow-hidden rounded-[1.75rem] bg-fog md:grid-cols-12">
               <div className="relative flex flex-col justify-between gap-8 bg-signal p-8 text-paper md:col-span-4 md:p-10">
                 {featuredDate && (
@@ -135,13 +134,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 </div>
               </div>
             </article>
+            </Tilt>
           </Reveal>
 
           {/* Next events */}
           <div className="mt-20 grid gap-8 md:grid-cols-12">
-            <Reveal className="md:col-span-4">
-              <h2 className="text-[1.75rem] leading-tight">{home.upcomingTitle}</h2>
-            </Reveal>
+            <MaskedLines as="h2" inView lines={[home.upcomingTitle]} className="text-[1.75rem] leading-tight md:col-span-4" />
             <Stagger className="md:col-span-8">
               {upcoming.map((e) => {
                 const c = ev.items[e.slug];
@@ -175,15 +173,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             {home.ecosystemLink}
           </Link>
         </div>
-        <Marquee items={partners} label={home.ecosystemTitle} />
+        <VelocityMarquee items={partners} label={home.ecosystemTitle} />
       </section>
 
       {/* Join */}
       <section className="py-24 md:py-36">
         <div className="container-site grid gap-10 md:grid-cols-12">
-          <Reveal className="md:col-span-8">
-            <h2 className="text-h1">{home.joinTitle}</h2>
-          </Reveal>
+          <MaskedLines as="h2" inView lines={[home.joinTitle]} className="text-h1 md:col-span-8" />
           <Reveal delay={0.1} className="md:col-span-4 md:self-end">
             <p className="text-lead text-slate">{home.joinBody}</p>
             <div className="mt-8">

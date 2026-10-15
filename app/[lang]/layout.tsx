@@ -6,6 +6,7 @@ import { getDictionary, hasLocale, locales } from "@/lib/i18n";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion";
+import { ScrollProgress, SmoothScroll } from "@/components/fx";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -38,6 +39,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <html lang={lang} className={`${display.variable} ${sans.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
+          <SmoothScroll />
+          <ScrollProgress />
           <Header locale={lang} nav={dict.nav} />
           <main id="main" tabIndex={-1} className="flex-1 outline-none">
             {children}
