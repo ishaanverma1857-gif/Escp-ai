@@ -387,6 +387,7 @@ const en = {
     note: "Members and non-members can purchase merchandise. Orders can be placed directly through the website.",
     order: "Place an order",
     orderSoon: "Ordering opens soon",
+    imageSoon: "Images to be added",
     colourLabel: "Colour",
     products: {
       hoodie: { name: "ESCP AI Hoodie", detail: "Heavyweight hoodie with the ESCP AI mark on the chest." },

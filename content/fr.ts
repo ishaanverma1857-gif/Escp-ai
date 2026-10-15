@@ -375,6 +375,7 @@ const fr: Dictionary = {
     note: "Membres et non-membres peuvent acheter nos articles. Les commandes se passent directement sur le site.",
     order: "Commander",
     orderSoon: "Commandes bientôt ouvertes",
+    imageSoon: "Images à venir",
     colourLabel: "Couleur",
     products: {
       hoodie: { name: "Sweat à capuche ESCP AI", detail: "Sweat épais avec le logo ESCP AI sur la poitrine." },

@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { contactHref, getDictionary, hasLocale } from "@/lib/i18n";
 import { products, site } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
-import { Tilt } from "@/components/fx";
-import Garment from "@/components/Garment";
+import { Knot } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
@@ -34,14 +33,11 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
               const copy = s.products[p.key];
               return (
                 <StaggerItem key={p.key} as="article" className="group flex flex-col">
-                  <Tilt max={8}>
-                  <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.5rem] bg-fog">
-                    <div aria-hidden="true" className="graticule absolute inset-0 opacity-70" />
-                    <div className="relative w-[72%] transition-transform duration-700 ease-[var(--ease-out-quint)] group-hover:-translate-y-2 group-hover:rotate-[-2deg] group-hover:scale-[1.04]">
-                      <Garment kind={p.key} colour={p.colour} />
-                    </div>
+                  {/* Product photos to be added. */}
+                  <div className="flex aspect-[4/5] flex-col items-center justify-center gap-4 rounded-[1.5rem] border-2 border-dashed border-royal/25 bg-fog">
+                    <Knot gap="var(--color-fog)" className="h-14 w-14 text-royal/30" />
+                    <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-royal/60">{s.imageSoon}</p>
                   </div>
-                  </Tilt>
                   <div className="mt-6 flex items-baseline justify-between gap-4">
                     <h2 className="text-[1.75rem] leading-tight">{copy.name}</h2>
                     <p className="font-display text-[1.6rem] font-extrabold tabular-nums text-royal">{price.format(p.price)}</p>
