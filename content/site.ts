@@ -50,9 +50,9 @@ export type Campus = {
 };
 
 export const campuses: Campus[] = [
-  { key: "paris", lat: 48.8566, lon: 2.3522, instagram: "escp.ai", campusPhoto: "/campuses/paris/campus.webp", landmarkPhotos: ["/campuses/paris/1.webp", null, "/campuses/paris/3.webp"] },
-  { key: "turin", lat: 45.0703, lon: 7.6869, instagram: "escp.ai_turin", campusPhoto: "/campuses/turin/campus.webp", landmarkPhotos: [null, "/campuses/turin/2.webp", "/campuses/turin/3.webp"] },
-  { key: "madrid", lat: 40.4168, lon: -3.7038, instagram: "escp.ai_madrid", campusPhoto: null, landmarkPhotos: ["/campuses/madrid/1.webp", "/campuses/madrid/2.webp", "/campuses/madrid/3.webp"] },
+  { key: "paris", lat: 48.8566, lon: 2.3522, instagram: "escp.ai", campusPhoto: "/campuses/paris/campus.webp", landmarkPhotos: ["/campuses/paris/1.webp", "/campuses/paris/2.webp", "/campuses/paris/3.webp"] },
+  { key: "turin", lat: 45.0703, lon: 7.6869, instagram: "escp.ai_turin", campusPhoto: "/campuses/turin/campus-2.webp", landmarkPhotos: [null, "/campuses/turin/2.webp", "/campuses/turin/3-2.webp"] },
+  { key: "madrid", lat: 40.4168, lon: -3.7038, instagram: "escp.ai_madrid", campusPhoto: "/campuses/madrid/campus.webp", landmarkPhotos: ["/campuses/madrid/1.webp", "/campuses/madrid/2.webp", "/campuses/madrid/3.webp"] },
   { key: "berlin", lat: 52.52, lon: 13.405, instagram: "escp.ai_berlin", campusPhoto: "/campuses/berlin/campus.webp", landmarkPhotos: ["/campuses/berlin/1.webp", "/campuses/berlin/2.webp", "/campuses/berlin/3.webp"] },
   { key: "london", lat: 51.5072, lon: -0.1276, upcoming: true, instagram: null, campusPhoto: "/campuses/london/campus.webp", landmarkPhotos: ["/campuses/london/1.webp", "/campuses/london/2.webp", "/campuses/london/3.webp"] },
 ];
