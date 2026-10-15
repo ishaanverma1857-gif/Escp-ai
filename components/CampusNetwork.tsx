@@ -3,19 +3,15 @@
 import { motion, useReducedMotion } from "motion/react";
 import { campuses, type Campus } from "@/content/site";
 import { entryDelay } from "./motion";
+import { BORDERS, CAMPUS_COUNTRIES, LAND, MAP } from "./europe-map";
 
 /*
- * A small cartographic view of western Europe that links the ESCP AI
- * campuses with arcs. Positions use a simple equirectangular projection, so
- * the cities sit where they really are relative to each other.
+ * A map of western Europe that links the ESCP AI campuses with arcs.
+ * Coastlines and borders come pre-projected from europe-map.ts; the campuses
+ * use the same projection, so every city sits exactly where it is on the map.
  */
 
-const LON_MIN = -6;
-const LAT_MAX = 53.5;
-const SCALE = 40;
-const LON_SCALE = SCALE * Math.cos((46 * Math.PI) / 180);
-const W = 480;
-const H = 580;
+const { LON_MIN, LAT_MAX, SCALE, LON_SCALE, W, H } = MAP;
 
 const project = (c: Pick<Campus, "lat" | "lon">) => ({
   x: (c.lon - LON_MIN) * LON_SCALE,
@@ -47,37 +43,71 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
   ];
   const future = arc(p.paris, p.london, -0.25);
 
-  const meridians = Array.from({ length: 9 }, (_, i) => -6 + i * 2);
-  const parallels = Array.from({ length: 8 }, (_, i) => 40 + i * 2);
+  const meridians = [-8, -4, 0, 4, 8, 12];
+  const parallels = [38, 42, 46, 50, 54];
 
   const labelPos: Record<Campus["key"], { dx: number; dy: number; anchor: "start" | "end" }> = {
-    paris: { dx: 18, dy: -10, anchor: "start" },
-    turin: { dx: 16, dy: -22, anchor: "start" },
-    madrid: { dx: 18, dy: 30, anchor: "start" },
-    london: { dx: -16, dy: -16, anchor: "end" },
+    paris: { dx: 16, dy: -8, anchor: "start" },
+    turin: { dx: 16, dy: 26, anchor: "start" },
+    madrid: { dx: -16, dy: 30, anchor: "end" },
+    london: { dx: -14, dy: -14, anchor: "end" },
   };
 
   const coord = (c: Campus) =>
     `${Math.abs(c.lat).toFixed(2)}° ${c.lat >= 0 ? "N" : "S"}, ${Math.abs(c.lon).toFixed(2)}° ${c.lon >= 0 ? "E" : "W"}`;
 
   return (
+    <div className="relative">
+    {/* Static map on its own layer, so the moving signals above never force it to repaint. */}
     <svg
       viewBox={`-20 -10 ${W + 40} ${H + 20}`}
-      className="h-auto w-full overflow-visible"
+      className="absolute inset-0 h-auto w-full [transform:translateZ(0)]"
+      aria-hidden="true"
+    >
+      <defs>
+        {/* Soft edges so the map melts into the page instead of ending in a hard box. */}
+        <radialGradient id="map-fade" cx="50%" cy="50%" r="58%">
+          <stop offset="62%" stopColor="#fff" />
+          <stop offset="100%" stopColor="#000" />
+        </radialGradient>
+        <mask id="map-mask" maskUnits="userSpaceOnUse" x="-20" y="-10" width={W + 40} height={H + 20}>
+          <rect x="-20" y="-10" width={W + 40} height={H + 20} fill="url(#map-fade)" />
+        </mask>
+      </defs>
+
+      <motion.g
+        mask="url(#map-mask)"
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.4, ease: EASE, delay: d0 }}
+        style={{ transformOrigin: `${W / 2}px ${H / 2}px` }}
+      >
+        <rect x="-20" y="-10" width={W + 40} height={H + 20} fill="#e3e9f8" />
+        {/* Graticule over the sea */}
+        <g stroke="var(--color-royal)" strokeOpacity="0.1" strokeWidth="1" strokeDasharray="2 5">
+          {meridians.map((lon) => {
+            const x = (lon - LON_MIN) * LON_SCALE;
+            return <line key={`m${lon}`} x1={x} y1={-10} x2={x} y2={H + 10} />;
+          })}
+          {parallels.map((lat) => {
+            const y = (LAT_MAX - lat) * SCALE;
+            return <line key={`p${lat}`} x1={-20} y1={y} x2={W + 20} y2={y} />;
+          })}
+        </g>
+        {/* Land, the campus countries, and borders */}
+        <path d={LAND} fill="#fbfcff" stroke="var(--color-royal)" strokeOpacity="0.45" strokeWidth="0.9" strokeLinejoin="round" />
+        {Object.entries(CAMPUS_COUNTRIES).map(([k, d]) => (
+          <path key={k} d={d} fill="var(--color-signal)" fillOpacity={k === "uk" ? 0.05 : 0.09} />
+        ))}
+        <path d={BORDERS} fill="none" stroke="var(--color-royal)" strokeOpacity="0.22" strokeWidth="0.7" strokeDasharray="3 2.5" />
+      </motion.g>
+    </svg>
+    <svg
+      viewBox={`-20 -10 ${W + 40} ${H + 20}`}
+      className="relative h-auto w-full overflow-visible"
       role="img"
       aria-label={labels.mapLabel}
     >
-      {/* Graticule */}
-      <g stroke="currentColor" className="text-ink/10" strokeWidth="1">
-        {meridians.map((lon) => {
-          const x = (lon - LON_MIN) * LON_SCALE;
-          return <line key={`m${lon}`} x1={x} y1={0} x2={x} y2={H} />;
-        })}
-        {parallels.map((lat) => {
-          const y = (LAT_MAX - lat) * SCALE;
-          return <line key={`p${lat}`} x1={0} y1={y} x2={W} y2={y} />;
-        })}
-      </g>
 
       {/* Links between campuses */}
       {links.map((l, i) => (
@@ -153,6 +183,10 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
               fontSize="21"
               fontWeight="800"
               className="fill-ink"
+              stroke="var(--color-paper)"
+              strokeWidth="5"
+              strokeLinejoin="round"
+              paintOrder="stroke"
             >
               {labels[c.key]}
             </text>
@@ -163,6 +197,10 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
               fontFamily="var(--font-sans)"
               fontSize="11.5"
               className={c.upcoming ? "fill-signal-deep" : "fill-slate"}
+              stroke="var(--color-paper)"
+              strokeWidth="4"
+              strokeLinejoin="round"
+              paintOrder="stroke"
             >
               {c.upcoming ? labels.londonNote : coord(c)}
             </text>
@@ -170,5 +208,6 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
         );
       })}
     </svg>
+    </div>
   );
 }
