@@ -52,9 +52,9 @@ export type Campus = {
 export const campuses: Campus[] = [
   { key: "paris", lat: 48.8566, lon: 2.3522, instagram: "escp.ai", campusPhoto: null, landmarkPhotos: [null, null, null] },
   { key: "turin", lat: 45.0703, lon: 7.6869, instagram: "escp.ai_turin", campusPhoto: null, landmarkPhotos: [null, null, null] },
-  { key: "madrid", lat: 40.4168, lon: -3.7038, instagram: "escp.ai_madrid", campusPhoto: null, landmarkPhotos: [null, null, null] },
-  { key: "berlin", lat: 52.52, lon: 13.405, instagram: "escp.ai_berlin", campusPhoto: null, landmarkPhotos: [null, null, null] },
-  { key: "london", lat: 51.5072, lon: -0.1276, upcoming: true, instagram: null, campusPhoto: null, landmarkPhotos: [null, null, null] },
+  { key: "madrid", lat: 40.4168, lon: -3.7038, instagram: "escp.ai_madrid", campusPhoto: null, landmarkPhotos: [null, "/campuses/madrid/2.webp", "/campuses/madrid/3.webp"] },
+  { key: "berlin", lat: 52.52, lon: 13.405, instagram: "escp.ai_berlin", campusPhoto: "/campuses/berlin/campus.webp", landmarkPhotos: ["/campuses/berlin/1.webp", "/campuses/berlin/2.webp", "/campuses/berlin/3.webp"] },
+  { key: "london", lat: 51.5072, lon: -0.1276, upcoming: true, instagram: null, campusPhoto: "/campuses/london/campus.webp", landmarkPhotos: ["/campuses/london/1.webp", "/campuses/london/2.webp", "/campuses/london/3.webp"] },
 ];
 
 export const findCampus = (key: string) => campuses.find((c) => c.key === key);
