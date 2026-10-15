@@ -44,7 +44,7 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
                   </Tilt>
                   <div className="mt-6 flex items-baseline justify-between gap-4">
                     <h2 className="text-[1.75rem] leading-tight">{copy.name}</h2>
-                    <p className="font-display text-[1.75rem] tabular-nums">{price.format(p.price)}</p>
+                    <p className="font-display text-[1.6rem] font-extrabold tabular-nums text-royal">{price.format(p.price)}</p>
                   </div>
                   <p className="mt-2 text-slate">{copy.detail}</p>
                   <p className="mt-4 flex items-center gap-2.5">

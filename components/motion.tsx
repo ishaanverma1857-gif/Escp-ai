@@ -158,7 +158,7 @@ export function FadeIn({ children, className, delay = 0 }: { children: ReactNode
 }
 
 /** Counts up to a number when it first becomes visible. */
-export function CountUp({ value, suffix = "" }: { value: number; suffix?: string }) {
+export function CountUp({ value, suffix = "", locale = "en" }: { value: number; suffix?: string; locale?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const reduce = useReducedMotion();
@@ -176,7 +176,7 @@ export function CountUp({ value, suffix = "" }: { value: number; suffix?: string
 
   return (
     <span ref={ref} className="tabular-nums">
-      {shown}
+      {new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-GB").format(shown)}
       {suffix}
     </span>
   );

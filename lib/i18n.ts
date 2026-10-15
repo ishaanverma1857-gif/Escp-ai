@@ -21,10 +21,11 @@ export const href = (locale: Locale, path = "/") =>
 
 /**
  * Where a contact-style call to action should go. Uses email once the official
- * address is confirmed; until then it points to the contact section.
+ * address is confirmed; until then it opens an Instagram DM, or the contact section.
  */
 export function contactHref(locale: Locale, subject: string) {
   if (site.email) return `mailto:${site.email}?subject=${encodeURIComponent(subject)}`;
+  if (site.instagram) return `https://ig.me/m/${site.instagram}`;
   return href(locale, "/join#contact");
 }
 

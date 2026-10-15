@@ -12,7 +12,7 @@ export const site = {
   /** Official contact email, e.g. "hello@escp-ai.org". TODO: confirm. */
   email: null as string | null,
   /** Instagram handle without the @, e.g. "escp.ai". TODO: confirm. */
-  instagram: null as string | null,
+  instagram: "escp.ai" as string | null,
   /** URL of the internal member platform. TODO: confirm. */
   memberPlatformUrl: null as string | null,
   /** External shop / order form URL. When null, orders go through email. */
@@ -23,6 +23,7 @@ export const site = {
 
 /** Impact figures. Leave `value` null until a verified figure is available. */
 export const impact: { key: string; value: number | null; suffix?: string }[] = [
+  { key: "community", value: 1200, suffix: "+" },
   { key: "events", value: null, suffix: "+" },
   { key: "members", value: null, suffix: "+" },
   { key: "campuses", value: 3 },
@@ -45,17 +46,45 @@ export const campuses: Campus[] = [
   { key: "london", lat: 51.5072, lon: -0.1276, upcoming: true },
 ];
 
-export const team = [
-  { name: "Gianni Taleb", role: "president" },
-  { name: "Jeremy Vilcosqui", role: "vicePresident" },
-  { name: "Laurent Darnis", role: "treasurer" },
-  { name: "Yessine Ben-Mansour", role: "generalSecretary" },
-  { name: "Anna Di Raddo", role: "events" },
-  { name: "Luke Lord", role: "research" },
-  { name: "Thomas Desormais", role: "communication" },
-  { name: "Joseph Gouraud", role: "business" },
-  { name: "Brice Borde", role: "research" },
-] as const;
+export const people = {
+  "gianni-taieb": "Gianni Taieb",
+  "jeremy-vilcosqui": "Jeremy Vilcosqui",
+  "laurent-darnis": "Laurent Darnis",
+  "yessine-ben-mansour": "Yessine Ben Mansour",
+  "anna-di-raddo": "Anna Di Raddo",
+  "louise-frorath": "Louise Frorath",
+  "luke-lord": "Luke Lord",
+  "thomas-desormais": "Thomas Desormais",
+  "joseph-gouraud": "Joseph Gouraud",
+  "brice-borde": "Brice Borde",
+} as const;
+
+export type PersonId = keyof typeof people;
+export const photo = (id: PersonId) => `/team/${id}.webp`;
+
+/** Teams as presented on the ESCP AI Instagram. A person can sit in more than one team. */
+export const teamGroups: { key: "bureau" | "research" | "eventsComms" | "business"; members: { id: PersonId; role?: string }[] }[] = [
+  {
+    key: "bureau",
+    members: [
+      { id: "gianni-taieb", role: "president" },
+      { id: "jeremy-vilcosqui", role: "vicePresident" },
+      { id: "laurent-darnis", role: "treasurer" },
+    ],
+  },
+  {
+    key: "research",
+    members: [{ id: "brice-borde" }, { id: "yessine-ben-mansour", role: "generalSecretary" }, { id: "luke-lord" }],
+  },
+  {
+    key: "eventsComms",
+    members: [{ id: "anna-di-raddo", role: "events" }, { id: "thomas-desormais" }, { id: "louise-frorath" }],
+  },
+  {
+    key: "business",
+    members: [{ id: "joseph-gouraud" }, { id: "thomas-desormais" }, { id: "laurent-darnis" }],
+  },
+];
 
 /** Partner names as written in the copy document. Logos need approval first. */
 export const partners = [
@@ -83,6 +112,8 @@ export type EventRecord = {
   /** Used to sort events whose exact day is not confirmed yet. */
   sortKey: string;
   time?: string;
+  /** Exact start, with time zone, for the live countdown. */
+  startsAt?: string;
   /** Registration link. TODO: add once available. */
   registrationUrl: string | null;
   /** Number of places. TODO: add once known. */
@@ -91,7 +122,7 @@ export type EventRecord = {
 };
 
 export const events: EventRecord[] = [
-  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "18:00", registrationUrl: null, places: null, featured: true },
+  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "17:45", startsAt: "2026-10-20T17:45:00+02:00", registrationUrl: null, places: null, featured: true },
   { slug: "ai-optimisation-workshop", date: "2026-10-28", sortKey: "2026-10-28", registrationUrl: null, places: null },
   { slug: "deep-tech-round-tables", sortKey: "2026-11-03", registrationUrl: null, places: null },
   { slug: "accio-work-workshop", sortKey: "2026-11-05", registrationUrl: null, places: null },

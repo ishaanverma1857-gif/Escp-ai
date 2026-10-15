@@ -45,7 +45,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                         href={href(lang, `/events/${e.slug}`)}
                         className="group grid gap-3 pb-14 pl-10 md:grid-cols-[16rem_1fr] md:gap-0 md:pl-0"
                       >
-                        <span className="text-lg text-slate md:pr-10 md:pt-1 md:text-right">{c.when}</span>
+                        <span className="text-lg font-bold text-royal md:pr-10 md:pt-1 md:text-right">{c.when}</span>
                         <span
                           aria-hidden="true"
                           className={`absolute left-0 top-[0.45rem] h-4 w-4 rounded-full border-2 transition-colors duration-300 md:left-[16rem] ${
@@ -53,7 +53,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                           }`}
                         />
                         <span className="md:pl-12">
-                          <span className="block font-display text-[clamp(1.75rem,1.4rem+1.3vw,2.5rem)] leading-[1.1] transition-colors duration-300 group-hover:text-signal">
+                          <span className="block font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.2rem)] font-extrabold uppercase leading-[1.1] tracking-[-0.01em] text-royal transition-colors duration-300 group-hover:text-signal">
                             {c.title}
                           </span>
                           <span className="mt-3 block max-w-[56ch] text-lead text-slate">{c.short}</span>
@@ -77,7 +77,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
           <Reveal delay={0.1} className="md:col-span-7">
             <p className="text-lead text-slate">{ev.recapsBody}</p>
             <div className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8">
-              <p className="font-display text-2xl leading-snug">{ev.recapsEmpty}</p>
+              <p className="font-display text-xl font-semibold leading-snug">{ev.recapsEmpty}</p>
               <div className="mt-6">
                 <Button href={subscribeHref} variant="quiet">
                   {ev.subscribe}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./ui";
+import { FlowLines } from "./fx";
 import { site } from "@/content/site";
 import type { Locale } from "@/lib/i18n";
 import type { Dictionary } from "@/content/en";
@@ -17,11 +18,14 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
   ];
 
   return (
-    <footer className="on-ink mt-auto bg-ink text-paper">
-      <div className="container-site grid gap-14 pb-10 pt-20 md:grid-cols-12 md:pt-28">
+    <footer className="on-ink relative mt-auto overflow-hidden bg-ink text-paper">
+      <FlowLines tone="dark" preset="soft" className="opacity-80" />
+      <div className="container-site relative pt-20 md:pt-28">
+        <Logo size="lg" gap="var(--color-ink)" className="text-paper" />
+      </div>
+      <div className="container-site relative grid gap-14 pb-10 pt-14 md:grid-cols-12">
         <div className="md:col-span-6">
-          <Logo className="text-paper" />
-          <p className="mt-8 max-w-[22ch] font-display text-[clamp(1.9rem,1.4rem+1.8vw,2.9rem)] leading-[1.1]">{footer.tagline}</p>
+          <p className="max-w-[24ch] font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.4rem)] font-semibold leading-[1.15]">{footer.tagline}</p>
           <ul className="mt-8 flex gap-6 text-paper/70">
             {(["paris", "turin", "madrid"] as const).map((c) => (
               <li key={c}>{campuses[c]}</li>
@@ -63,7 +67,7 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
           </ul>
         </div>
       </div>
-      <div className="container-site flex flex-col gap-2 border-t border-paper/12 py-8 text-sm text-paper/60 sm:flex-row sm:justify-between">
+      <div className="container-site relative flex flex-col gap-2 border-t border-paper/12 py-8 text-sm text-paper/60 sm:flex-row sm:justify-between">
         <p>{footer.rights}</p>
         <p>{footer.independent}</p>
       </div>

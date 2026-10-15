@@ -1,10 +1,9 @@
-import { Atkinson_Hyperlegible_Next, Newsreader } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Montserrat } from "next/font/google";
 
-export const display = Newsreader({
+// Montserrat matches the ESCP AI brand (posters, wordmark); Atkinson keeps body text easy to read.
+export const display = Montserrat({
   subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
-  variable: "--font-newsreader",
+  variable: "--font-montserrat",
   display: "swap",
 });
 

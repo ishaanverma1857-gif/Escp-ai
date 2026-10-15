@@ -23,7 +23,7 @@ export default async function LoginPage({ params }: PageProps<"/[lang]/login">) 
       <div className="container-site relative grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <FadeIn>
-            <p className="mb-6 font-display text-xl italic text-slate">{dict.nav.login}</p>
+            <p className="kicker mb-6">{dict.nav.login}</p>
           </FadeIn>
           <MaskedLines lines={[l.title]} className="text-h1" />
           <FadeIn delay={0.35}>
@@ -53,7 +53,7 @@ export default async function LoginPage({ params }: PageProps<"/[lang]/login">) 
             {l.features.map((f, i) => (
               <StaggerItem as="div" key={f} className="flex items-center gap-4 border-t border-paper/12 py-4">
                 <span className={`h-2.5 w-2.5 rounded-full ${i === 0 ? "bg-signal-on-ink" : "bg-paper/40"}`} />
-                <span className="font-display text-2xl">{f}</span>
+                <span className="font-display text-xl font-bold">{f}</span>
                 <span className="ml-auto h-2 rounded-full bg-paper/12" style={{ width: `${30 + ((i * 17) % 40)}%` }} />
               </StaggerItem>
             ))}

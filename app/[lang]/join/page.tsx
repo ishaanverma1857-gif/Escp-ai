@@ -33,7 +33,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
       <section className="on-ink overflow-hidden bg-ink py-24 text-paper md:py-32">
         <div className="container-site">
           <Reveal>
-            <p className="max-w-[30ch] font-display text-[clamp(2rem,1.4rem+2.6vw,3.75rem)] leading-[1.1]">{j.values}</p>
+            <p className="max-w-[30ch] font-display text-[clamp(1.7rem,1.2rem+2.2vw,3.2rem)] font-bold leading-[1.15] tracking-[-0.01em]">{j.values}</p>
           </Reveal>
           <Stagger className="mt-14 flex flex-wrap gap-3" gap={0.08}>
             {j.valueWords.map((w) => (
@@ -67,7 +67,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
         <div className="container-site grid gap-12 md:grid-cols-12">
           <MaskedLines as="h2" inView lines={[j.recruitmentTitle]} className="text-h2 md:col-span-4" />
           <Reveal delay={0.1} className="md:col-span-8">
-            <p className="max-w-[62ch] font-display text-[clamp(1.35rem,1.15rem+0.8vw,1.85rem)] leading-[1.45]">{j.recruitment}</p>
+            <p className="max-w-[62ch] font-display text-[clamp(1.2rem,1.05rem+0.6vw,1.6rem)] font-medium leading-[1.5]">{j.recruitment}</p>
             <div className="mt-12 flex flex-wrap gap-4">
               <Button href={applyHref}>{j.ctaApply}</Button>
               <Button href={contactHref(lang, dict.mail.apply)} variant="secondary">
@@ -90,7 +90,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
                   <div>
                     <dt className="text-slate">{j.email}</dt>
                     <dd className="mt-1">
-                      <a href={`mailto:${site.email}`} className="link-underline font-display text-[1.75rem] break-all">
+                      <a href={`mailto:${site.email}`} className="link-underline font-display text-[1.5rem] font-bold break-all">
                         {site.email}
                       </a>
                     </dd>
@@ -100,7 +100,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
                   <div>
                     <dt className="text-slate">{j.instagram}</dt>
                     <dd className="mt-1">
-                      <a href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener noreferrer" className="link-underline font-display text-[1.75rem]">
+                      <a href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener noreferrer" className="link-underline font-display text-[1.5rem] font-bold">
                         @{site.instagram}
                       </a>
                     </dd>
@@ -108,7 +108,7 @@ export default async function JoinPage({ params }: PageProps<"/[lang]/join">) {
                 )}
               </dl>
             ) : (
-              <p className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8 font-display text-2xl leading-snug">{j.contactPending}</p>
+              <p className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8 font-display text-xl font-semibold leading-snug">{j.contactPending}</p>
             )}
           </Reveal>
         </div>

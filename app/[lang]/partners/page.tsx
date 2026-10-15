@@ -35,7 +35,7 @@ export default async function PartnersPage({ params }: PageProps<"/[lang]/partne
                   aria-hidden="true"
                   className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 ease-[var(--ease-out-quint)] group-hover:scale-y-100"
                 />
-                <span className="relative font-display text-[clamp(2rem,1.6rem+1.4vw,2.75rem)] leading-none transition-colors duration-500 group-hover:text-paper">
+                <span className="relative font-display text-[clamp(1.6rem,1.3rem+1.2vw,2.3rem)] font-extrabold uppercase leading-none tracking-[-0.02em] text-royal transition-colors duration-500 group-hover:text-paper">
                   {name}
                 </span>
               </StaggerItem>

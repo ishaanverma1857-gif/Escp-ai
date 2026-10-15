@@ -38,7 +38,9 @@ const en = {
       "Map connecting ESCP AI's campuses in Paris, Turin and Madrid, with London shown as an upcoming branch.",
   },
   home: {
-    heroTitle: ["The Future of AI", "Starts Here"],
+    kicker: "ESCP's inter-campus AI society",
+    heroTitle: ["The future of AI", "starts here."],
+    formats: ["Events", "Workshops", "AI Days", "Community"],
     heroBody:
       "ESCP AI connects students, companies, and the wider artificial intelligence ecosystem across Paris, Turin, and Madrid. We make AI accessible, practical, and professionally valuable for every ESCP student — whether you are already technical or simply curious about how AI can shape your future.",
     ctaEvents: "Discover our events",
@@ -55,6 +57,7 @@ const en = {
     impactTitle: "Our impact",
     impactClosing: "Building the AI community of tomorrow — together.",
     impactLabels: {
+      community: "followers on Instagram",
       events: "events organised",
       members: "members",
       campuses: "campuses connected",
@@ -62,6 +65,13 @@ const en = {
       projects: "student projects supported",
     } as Record<string, string>,
     featuredTitle: "Featured event",
+    featuredKind: "Conference & networking cocktail",
+    featuredMeet: "Meet 7 to 8 KPMG professionals",
+    featuredAreas: ["Tech", "Audit", "Transaction Services", "Consulting", "Innovation"],
+    startsIn: "Starts in",
+    countdown: { days: "Days", hours: "Hours", minutes: "Min", seconds: "Sec" },
+    teamTitle: "The people behind ESCP AI",
+    teamLink: "Meet the team",
     register: "Register now",
     upcomingTitle: "Coming up next",
     allEvents: "View all events",
@@ -75,6 +85,12 @@ const en = {
     intro:
       "ESCP AI is built by students from different backgrounds, campuses, and areas of expertise. Our team combines leadership, research, communication, business, events, and innovation.",
     leadershipTitle: "Leadership team",
+    groups: {
+      bureau: "Bureau",
+      research: "R&D",
+      eventsComms: "Events & Communication",
+      business: "Business",
+    } as Record<string, string>,
     roles: {
       president: "President",
       vicePresident: "Vice-President",
@@ -146,13 +162,14 @@ const en = {
     placesUnknown: "To be confirmed",
     items: {
       "kpmg-ai-conference": {
-        title: "KPMG AI Conference",
-        when: "20 October 2026",
-        time: "6:00 PM",
-        location: "ESCP Étienne Marcel campus, Paris",
-        short: "6:00 PM, Étienne Marcel. Open to all.",
+        title: "AI at KPMG. And your future career?",
+        when: "Tuesday 20 October 2026",
+        time: "5:45 PM",
+        location: "Champerret campus, Étienne Marcel lecture hall",
+        short: "Conference and networking cocktail with 7 to 8 KPMG professionals.",
         description:
-          "Join ESCP AI for a conference exploring the opportunities and challenges of artificial intelligence in business. Meet professionals, ask questions, and discover how AI is transforming industries and career paths.",
+          "How AI is transforming KPMG, its professions and your future internships. A conference followed by a networking cocktail: meet 7 to 8 KPMG professionals from Tech, Audit, Transaction Services, Consulting and Innovation, ask your questions, and discover where AI can take your career.",
+        programme: "5:45 PM conference, followed by a networking cocktail.",
         partner: "KPMG",
         speakers: null as string | null,
         audience: "Open to all",
@@ -233,6 +250,7 @@ const en = {
         when: string;
         time: string | null;
         location: string | null;
+        programme?: string;
         short: string;
         description: string;
         partner: string | null;

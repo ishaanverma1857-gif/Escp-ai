@@ -40,7 +40,9 @@ const fr: Dictionary = {
       "Carte reliant les campus ESCP AI de Paris, Turin et Madrid, avec Londres comme prochaine antenne.",
   },
   home: {
-    heroTitle: ["Le futur de l'IA", "commence ici"],
+    kicker: "L'association IA inter-campus d'ESCP",
+    heroTitle: ["Le futur de l'IA", "commence ici."],
+    formats: ["Événements", "Ateliers", "AI Days", "Communauté"],
     heroBody:
       "ESCP AI connecte les étudiants, les entreprises et l'écosystème de l'intelligence artificielle à Paris, Turin et Madrid. Nous rendons l'IA accessible, concrète et utile pour l'avenir professionnel de chaque étudiant d'ESCP — que vous soyez déjà spécialisé ou simplement curieux.",
     ctaEvents: "Découvrir nos événements",
@@ -57,6 +59,7 @@ const fr: Dictionary = {
     impactTitle: "Notre impact",
     impactClosing: "Construire ensemble la communauté IA de demain.",
     impactLabels: {
+      community: "abonnés sur Instagram",
       events: "événements organisés",
       members: "membres",
       campuses: "campus connectés",
@@ -64,6 +67,13 @@ const fr: Dictionary = {
       projects: "projets étudiants accompagnés",
     },
     featuredTitle: "Événement à la une",
+    featuredKind: "Conférence & cocktail networking",
+    featuredMeet: "Rencontre avec 7 à 8 professionnels KPMG",
+    featuredAreas: ["Tech", "Audit", "Transaction Services", "Conseil", "Innovation"],
+    startsIn: "Début dans",
+    countdown: { days: "Jours", hours: "Heures", minutes: "Min", seconds: "Sec" },
+    teamTitle: "L'équipe derrière ESCP AI",
+    teamLink: "Découvrir l'équipe",
     register: "S'inscrire maintenant",
     upcomingTitle: "Prochainement",
     allEvents: "Voir tous les événements",
@@ -77,6 +87,12 @@ const fr: Dictionary = {
     intro:
       "ESCP AI est porté par des étudiants aux profils, campus et compétences variés. Notre équipe réunit leadership, recherche, communication, business, événements et innovation.",
     leadershipTitle: "Bureau",
+    groups: {
+      bureau: "Bureau",
+      research: "R&D",
+      eventsComms: "Événements & Communication",
+      business: "Business",
+    },
     roles: {
       president: "Président",
       vicePresident: "Vice-président",
@@ -148,13 +164,14 @@ const fr: Dictionary = {
     placesUnknown: "À confirmer",
     items: {
       "kpmg-ai-conference": {
-        title: "Conférence IA KPMG",
-        when: "20 octobre 2026",
-        time: "18h00",
-        location: "Campus ESCP Étienne Marcel, Paris",
-        short: "18h00, Étienne Marcel. Ouvert à tous.",
+        title: "L'IA chez KPMG. Et ta future carrière ?",
+        when: "Mardi 20 octobre 2026",
+        time: "17h45",
+        location: "Campus Champerret, amphi Étienne Marcel",
+        short: "Conférence et cocktail networking avec 7 à 8 professionnels KPMG.",
         description:
-          "Rejoignez ESCP AI pour une conférence sur les opportunités et les défis de l'intelligence artificielle en entreprise. Rencontrez des professionnels, posez vos questions et découvrez comment l'IA transforme les secteurs et les parcours professionnels.",
+          "Comment l'IA transforme KPMG, les métiers et tes futurs stages. Une conférence suivie d'un cocktail networking : rencontre 7 à 8 professionnels KPMG (Tech, Audit, Transaction Services, Conseil, Innovation), pose tes questions et découvre où l'IA peut mener ta carrière.",
+        programme: "17h45 conférence, suivie d'un cocktail networking.",
         partner: "KPMG",
         speakers: null,
         audience: "Ouvert à tous",

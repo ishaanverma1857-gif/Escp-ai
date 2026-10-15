@@ -1,12 +1,7 @@
-function Mark({ x, y, s = 1, colour }: { x: number; y: number; s?: number; colour: string }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M0 -9 L9 6 L-9 6 Z" fill="none" stroke={colour} strokeWidth="1.4" strokeLinejoin="round" />
-      <circle cx="0" cy="-8.5" r="2.4" fill={colour} />
-      <circle cx="-8.5" cy="6" r="2.4" fill={colour} />
-      <circle cx="8.5" cy="6" r="2.4" fill="var(--color-signal)" />
-    </g>
-  );
+import { Knot } from "./brand";
+
+function Mark({ x, y, s = 1, colour, gap }: { x: number; y: number; s?: number; colour: string; gap: string }) {
+  return <Knot colour={colour} gap={gap} className="" {...{ x: x - 10 * s, y: y - 10 * s, width: 20 * s, height: 20 * s }} />;
 }
 
 /** Simple line illustrations of each product, filled with its real colour. */
@@ -23,7 +18,7 @@ export default function Garment({ kind, colour }: { kind: "hoodie" | "tshirt" | 
         <path d="M120 44 C112 70 110 100 112 126" fill="none" stroke={stroke} strokeWidth="1.2" />
         <path d="M30 128 L198 124 C214 124 226 134 218 144 C196 150 118 154 44 148 C30 146 24 136 30 128 Z" fill={colour} stroke={stroke} strokeWidth="1.5" />
         <circle cx="121" cy="44" r="4" fill={colour} stroke={stroke} strokeWidth="1.2" />
-        <Mark x={80} y={96} s={1.15} colour={mark} />
+        <Mark x={80} y={96} s={1.15} colour={mark} gap={colour} />
       </svg>
     );
   }
@@ -39,7 +34,7 @@ export default function Garment({ kind, colour }: { kind: "hoodie" | "tshirt" | 
           strokeLinejoin="round"
         />
         <path d="M86 30 C96 50 144 50 154 30" fill="none" stroke={stroke} strokeWidth="1.5" />
-        <Mark x={145} y={86} s={0.9} colour={mark} />
+        <Mark x={145} y={86} s={0.9} colour={mark} gap={colour} />
       </svg>
     );
   }
@@ -56,7 +51,7 @@ export default function Garment({ kind, colour }: { kind: "hoodie" | "tshirt" | 
       <path d="M84 40 C90 70 150 70 156 40" fill="none" stroke={stroke} strokeWidth="1.5" />
       <path d="M112 64 L110 96 M128 64 L130 96" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" />
       <path d="M78 168 L162 168 L170 206 L70 206 Z" fill="none" stroke={stroke} strokeWidth="1.3" />
-      <Mark x={120} y={128} s={1.2} colour={mark} />
+      <Mark x={120} y={128} s={1.2} colour={mark} gap={colour} />
     </svg>
   );
 }

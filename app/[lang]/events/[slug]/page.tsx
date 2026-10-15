@@ -50,19 +50,19 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
         <div className="mt-10 grid gap-14 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <FadeIn delay={0.05}>
-              <p className="font-display text-2xl italic text-signal">{c.when}</p>
+              <p className="kicker">{c.when}</p>
             </FadeIn>
-            <MaskedLines lines={[c.title]} className="mt-4 text-h1" delay={0.1} />
+            <MaskedLines lines={[c.title]} className="mt-4 text-h1 text-royal" delay={0.1} />
             <FadeIn delay={0.35}>
               <p className="mt-8 max-w-[60ch] text-lead text-slate">{c.description}</p>
             </FadeIn>
 
             <Reveal className="mt-14">
-              <h2 className="text-[1.75rem] leading-tight">{ev.fields.programme}</h2>
-              <p className="mt-3 text-slate">{tba}</p>
+              <h2 className="text-[1.5rem] leading-tight text-royal">{ev.fields.programme}</h2>
+              <p className="mt-3 text-slate">{c.programme ?? tba}</p>
             </Reveal>
             <Reveal className="mt-10">
-              <h2 className="text-[1.75rem] leading-tight">{ev.fields.accessibility}</h2>
+              <h2 className="text-[1.5rem] leading-tight text-royal">{ev.fields.accessibility}</h2>
               <p className="mt-3 max-w-[60ch] text-slate">{ev.accessibilityDefault}</p>
             </Reveal>
           </div>

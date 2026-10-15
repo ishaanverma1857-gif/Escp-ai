@@ -81,146 +81,202 @@ export function ScrollProgress() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Neural field — interactive particle network behind the hero         */
+/* Flow lines — bundles of fine contour lines, the ESCP AI texture      */
 /* ------------------------------------------------------------------ */
 
-type Particle = { x: number; y: number; vx: number; vy: number; r: number };
+type Ribbon = { y: number; amp: number; freq: number; speed: number; phase: number; spread: number; lines: number; tilt: number };
 
-export function NeuralField({ className = "" }: { className?: string }) {
+const RIBBONS: Record<"hero" | "band" | "soft", Ribbon[]> = {
+  hero: [
+    { y: 0.28, amp: 0.16, freq: 1.3, speed: 0.11, phase: 0, spread: 0.2, lines: 34, tilt: 0.35 },
+    { y: 0.86, amp: 0.12, freq: 1.7, speed: 0.08, phase: 2.1, spread: 0.16, lines: 28, tilt: -0.25 },
+  ],
+  band: [
+    { y: 0.32, amp: 0.2, freq: 1.1, speed: 0.1, phase: 0.6, spread: 0.24, lines: 36, tilt: 0.2 },
+    { y: 0.78, amp: 0.14, freq: 1.6, speed: 0.07, phase: 3.4, spread: 0.18, lines: 26, tilt: -0.3 },
+  ],
+  soft: [{ y: 0.55, amp: 0.18, freq: 1.2, speed: 0.08, phase: 1.2, spread: 0.22, lines: 30, tilt: 0.15 }],
+};
+
+export function FlowLines({
+  tone = "light",
+  preset = "hero",
+  className = "",
+}: {
+  tone?: "light" | "dark";
+  preset?: keyof typeof RIBBONS;
+  className?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
 
     let w = 0;
     let h = 0;
-    let particles: Particle[] = [];
     let raf = 0;
     let visible = true;
-    const pointer = { x: -9999, y: -9999, active: false };
+    let t = Math.random() * 100;
+    let last = performance.now();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const LINK = 130;
+    const pointer = { x: -9999, y: -9999, strength: 0, target: 0 };
+    const ribbons = RIBBONS[preset];
+    const rgb = tone === "light" ? "34,65,168" : "122,150,255";
+    const baseAlpha = tone === "light" ? 0.15 : 0.22;
 
-    const seed = () => {
+    const resize = () => {
       const rect = canvas.getBoundingClientRect();
       w = rect.width;
       h = rect.height;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(95, Math.round((w * h) / (w < 640 ? 16000 : 13000)));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.28,
-        vy: (Math.random() - 0.5) * 0.28,
-        r: Math.random() * 1.4 + 0.8,
-      }));
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
-      for (const p of particles) {
-        if (!reduce) {
-          // Gentle pull toward the cursor.
-          if (pointer.active) {
-            const dx = pointer.x - p.x;
-            const dy = pointer.y - p.y;
-            const d = Math.hypot(dx, dy);
-            if (d < 220 && d > 1) {
-              p.vx += (dx / d) * 0.012;
-              p.vy += (dy / d) * 0.012;
+      ctx.lineWidth = 1;
+      const step = w < 640 ? 14 : 10;
+      const sigma = Math.min(w, h) * 0.14;
+      for (const r of ribbons) {
+        for (let i = 0; i < r.lines; i++) {
+          const k = i / (r.lines - 1) - 0.5;
+          // Lines near the centre of the ribbon are a touch stronger.
+          ctx.strokeStyle = `rgba(${rgb},${baseAlpha * (1 - Math.abs(k) * 0.9)})`;
+          ctx.beginPath();
+          for (let x = -step; x <= w + step; x += step) {
+            const u = x / w;
+            const centre =
+              h * (r.y + r.tilt * (u - 0.5) * 0.4) +
+              h * r.amp * Math.sin(u * Math.PI * r.freq + t * r.speed * 6 + r.phase) +
+              h * r.amp * 0.35 * Math.sin(u * Math.PI * r.freq * 2.3 - t * r.speed * 4 + r.phase * 1.7);
+            // The ribbon pinches and fans out along its length, like twisted contour lines.
+            const fan = 0.35 + 0.65 * Math.abs(Math.sin(u * Math.PI * 1.4 + t * r.speed * 3 + r.phase));
+            let y = centre + k * h * r.spread * fan;
+            if (pointer.strength > 0.01) {
+              const dx = x - pointer.x;
+              const dy = y - pointer.y;
+              const fall = Math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma));
+              y += Math.sign(dy || 1) * fall * 46 * pointer.strength;
             }
+            if (x === -step) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
           }
-          p.vx *= 0.985;
-          p.vy *= 0.985;
-          // Keep a minimum drift so the field never freezes.
-          if (Math.abs(p.vx) < 0.05) p.vx += (Math.random() - 0.5) * 0.04;
-          if (Math.abs(p.vy) < 0.05) p.vy += (Math.random() - 0.5) * 0.04;
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < -20) p.x = w + 20;
-          if (p.x > w + 20) p.x = -20;
-          if (p.y < -20) p.y = h + 20;
-          if (p.y > h + 20) p.y = -20;
+          ctx.stroke();
         }
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        const a = particles[i];
-        for (let j = i + 1; j < particles.length; j++) {
-          const b = particles[j];
-          const d = Math.hypot(a.x - b.x, a.y - b.y);
-          if (d < LINK) {
-            ctx.strokeStyle = `rgba(14,34,64,${(1 - d / LINK) * 0.16})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-        if (pointer.active) {
-          const d = Math.hypot(a.x - pointer.x, a.y - pointer.y);
-          if (d < 180) {
-            ctx.strokeStyle = `rgba(47,84,235,${(1 - d / 180) * 0.55})`;
-            ctx.lineWidth = 1.1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(pointer.x, pointer.y);
-            ctx.stroke();
-          }
-        }
-        const near = pointer.active && Math.hypot(a.x - pointer.x, a.y - pointer.y) < 180;
-        ctx.fillStyle = near ? "rgba(47,84,235,0.9)" : "rgba(14,34,64,0.35)";
-        ctx.beginPath();
-        ctx.arc(a.x, a.y, near ? a.r + 0.8 : a.r, 0, Math.PI * 2);
-        ctx.fill();
       }
     };
 
-    const loop = () => {
-      if (visible) draw();
+    const loop = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (visible) {
+        t += dt;
+        pointer.strength += (pointer.target - pointer.strength) * 0.08;
+        draw();
+      }
       raf = requestAnimationFrame(loop);
     };
 
-    seed();
+    resize();
     if (reduce) draw();
     else raf = requestAnimationFrame(loop);
 
-    const onResize = () => {
-      seed();
+    const ro = new ResizeObserver(() => {
+      resize();
       if (reduce) draw();
-    };
+    });
+    ro.observe(canvas);
+    const io = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting));
+    io.observe(canvas);
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const rect = canvas.getBoundingClientRect();
       pointer.x = e.clientX - rect.left;
       pointer.y = e.clientY - rect.top;
-      pointer.active = pointer.y > 0 && pointer.y < rect.height;
+      pointer.target = pointer.y > 0 && pointer.y < rect.height ? 1 : 0;
     };
-    const onLeave = () => (pointer.active = false);
-    const io = new IntersectionObserver(([entry]) => (visible = entry.isIntersecting));
-    io.observe(canvas);
-
-    const ro = new ResizeObserver(onResize);
-    ro.observe(canvas);
+    const onLeave = () => (pointer.target = 0);
     window.addEventListener("pointermove", onMove, { passive: true });
     document.addEventListener("pointerleave", onLeave);
     return () => {
       cancelAnimationFrame(raf);
-      io.disconnect();
       ro.disconnect();
+      io.disconnect();
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
     };
-  }, [reduce]);
+  }, [reduce, tone, preset]);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className={`pointer-events-none block h-full w-full ${className}`} />;
+  return <canvas ref={canvasRef} aria-hidden="true" className={`pointer-events-none absolute inset-0 block h-full w-full ${className}`} />;
+}
+
+/** Arc of dots, a recurring motif in the ESCP AI visuals. Dots appear one by one when scrolled into view. */
+export function DottedArc({ className = "", dots = 9, sweep = 70, radius = 120, rotate = 0 }: { className?: string; dots?: number; sweep?: number; radius?: number; rotate?: number }) {
+  const pts = Array.from({ length: dots }, (_, i) => {
+    const a = ((rotate + (i / (dots - 1)) * sweep) * Math.PI) / 180;
+    return { x: radius + Math.cos(a) * radius, y: radius + Math.sin(a) * radius, r: 1.6 + (i / dots) * 1.6 };
+  });
+  return (
+    <motion.svg
+      viewBox={`-6 -6 ${radius * 2 + 12} ${radius * 2 + 12}`}
+      aria-hidden="true"
+      className={`pointer-events-none ${className}`}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+    >
+      {pts.map((p, i) => (
+        <motion.circle
+          key={i}
+          cx={p.x}
+          cy={p.y}
+          r={p.r}
+          fill="currentColor"
+          variants={{ hidden: { opacity: 0, scale: 0 }, show: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: EASE } } }}
+          style={{ transformOrigin: `${p.x}px ${p.y}px` }}
+        />
+      ))}
+    </motion.svg>
+  );
+}
+
+/** Live countdown to an event. Rendered only in the browser so server and client markup always match. */
+export function Countdown({ to, labels }: { to: string; labels: { days: string; hours: string; minutes: string; seconds: string } }) {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const first = setTimeout(tick, 0);
+    const id = setInterval(tick, 1000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, []);
+
+  const target = new Date(to).getTime();
+  if (now === null || target - now <= 0) return <div className="h-[4.75rem]" aria-hidden="true" />;
+  const s = Math.floor((target - now) / 1000);
+  const parts = [
+    { v: Math.floor(s / 86400), l: labels.days },
+    { v: Math.floor((s % 86400) / 3600), l: labels.hours },
+    { v: Math.floor((s % 3600) / 60), l: labels.minutes },
+    { v: s % 60, l: labels.seconds },
+  ];
+  return (
+    <div className="flex gap-3 sm:gap-4" role="timer" aria-live="off">
+      {parts.map((p) => (
+        <div key={p.l} className="min-w-[4.25rem] rounded-2xl bg-paper/10 px-3 py-2.5 text-center ring-1 ring-paper/20 backdrop-blur-sm">
+          <span className="block font-display text-[1.9rem] font-extrabold leading-none tabular-nums">{String(p.v).padStart(2, "0")}</span>
+          <span className="mt-1 block text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-75">{p.l}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -255,14 +311,24 @@ export function ScrollText({ text, className = "" }: { text: string; className?:
 /* Marquee that reacts to scroll speed and direction                    */
 /* ------------------------------------------------------------------ */
 
-export function VelocityMarquee({ items, label, baseVelocity = -2.2 }: { items: string[]; label: string; baseVelocity?: number }) {
+export function VelocityMarquee({
+  children,
+  label,
+  baseVelocity = -2.2,
+  className = "py-8",
+}: {
+  children: ReactNode;
+  label: string;
+  baseVelocity?: number;
+  className?: string;
+}) {
   const reduce = useReducedMotion();
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
   const smoothVelocity = useSpring(scrollVelocity, { damping: 50, stiffness: 400 });
   const velocityFactor = useTransform(smoothVelocity, [-1500, 0, 1500], [-4, 0, 4], { clamp: false });
-  const skewX = useTransform(smoothVelocity, [-2500, 0, 2500], [8, 0, -8]);
+  const skewX = useTransform(smoothVelocity, [-2500, 0, 2500], [6, 0, -6]);
   const x = useTransform(baseX, (v) => `${wrap(-50, 0, v)}%`);
   const direction = useRef(1);
   const [paused, setPaused] = useState(false);
@@ -277,30 +343,19 @@ export function VelocityMarquee({ items, label, baseVelocity = -2.2 }: { items: 
     baseX.set(baseX.get() + move);
   });
 
-  const row = (hidden: boolean) => (
-    <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
-      {items.map((name) => (
-        <li key={name} className="flex items-center whitespace-nowrap font-display text-[clamp(2.4rem,1.6rem+3.4vw,4.75rem)] leading-none text-ink">
-          <span className="px-6 md:px-12">{name}</span>
-          <svg viewBox="0 0 10 10" className="h-3 w-3 text-signal" aria-hidden="true">
-            <circle cx="5" cy="5" r="4" fill="currentColor" />
-          </svg>
-        </li>
-      ))}
-    </ul>
-  );
-
   return (
     <div
       role="region"
       aria-label={label}
-      className="relative overflow-hidden py-8 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+      className={`relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] ${className}`}
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
     >
       <motion.div className="flex w-max" style={{ x, skewX }}>
-        {row(false)}
-        {row(true)}
+        <div className="flex shrink-0">{children}</div>
+        <div className="flex shrink-0" aria-hidden="true">
+          {children}
+        </div>
       </motion.div>
     </div>
   );
@@ -423,35 +478,23 @@ export function PointerParallax({ children, className = "", depth = 10 }: { chil
 }
 
 /* ------------------------------------------------------------------ */
-/* Large campus triangle that draws itself with scroll                  */
+/* Large ESCP AI symbol that draws its orbits as you scroll             */
 /* ------------------------------------------------------------------ */
 
-export function ScrollTriangle({ className = "" }: { className?: string }) {
+export function ScrollKnot({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const draw = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-8, 8]);
-  const nodes = useTransform(scrollYProgress, [0.45, 0.65], [0, 1]);
+  const drawA = useTransform(scrollYProgress, [0.1, 0.5], [0, 1]);
+  const drawB = useTransform(scrollYProgress, [0.2, 0.6], [0, 1]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [-25, 25]);
 
   return (
     <div ref={ref} aria-hidden="true" className={className}>
-    <motion.svg viewBox="0 0 400 360" className="h-auto w-full" style={{ rotate }}>
-      <motion.path
-        d="M200 30 L370 320 L30 320 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        style={{ pathLength: draw }}
-      />
-      {[
-        [200, 30],
-        [370, 320],
-        [30, 320],
-      ].map(([cx, cy], i) => (
-        <motion.circle key={i} cx={cx} cy={cy} r="9" fill={i === 1 ? "var(--color-signal-on-ink)" : "currentColor"} style={{ opacity: nodes, scale: nodes }} />
-      ))}
-    </motion.svg>
+      <motion.svg viewBox="0 0 100 100" className="h-auto w-full" style={{ rotate }}>
+        <motion.ellipse cx="50" cy="50" rx="40" ry="21" transform="rotate(45 50 50)" fill="none" stroke="currentColor" strokeWidth="0.5" style={{ pathLength: drawA }} />
+        <motion.ellipse cx="50" cy="50" rx="40" ry="21" transform="rotate(-45 50 50)" fill="none" stroke="currentColor" strokeWidth="0.5" style={{ pathLength: drawB }} />
+        <motion.ellipse cx="50" cy="50" rx="46" ry="24" transform="rotate(45 50 50)" fill="none" stroke="currentColor" strokeWidth="0.25" strokeDasharray="0.6 2.4" style={{ pathLength: drawB, opacity: 0.6 }} />
+      </motion.svg>
     </div>
   );
 }

@@ -91,7 +91,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             className={`relative z-[55] transition-colors ${open ? "text-paper" : "text-ink"}`}
             aria-label={`ESCP AI — ${nav.home}`}
           >
-            <Logo />
+            <Logo gap={open ? "var(--color-ink)" : "var(--color-paper)"} />
           </Link>
 
           <nav aria-label={nav.primary} className="hidden lg:block">
@@ -127,7 +127,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             <Magnetic>
             <Link
               href={`/${locale}/join`}
-              className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-signal-deep"
+              className="inline-flex min-h-11 items-center rounded-full bg-royal px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-ink"
             >
               {nav.join}
             </Link>
@@ -183,7 +183,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
                       ref={i === 0 ? firstLink : undefined}
                       href={`/${locale}${l.path}`}
                       aria-current={(l.path === "" ? current === "/" : isActive(l.path)) ? "page" : undefined}
-                      className="flex items-center justify-between py-4 font-display text-[2.1rem] leading-tight aria-[current=page]:text-signal-on-ink"
+                      className="flex items-center justify-between py-4 font-display text-[1.9rem] font-extrabold uppercase leading-tight tracking-[-0.01em] aria-[current=page]:text-signal-on-ink"
                     >
                       {l.label}
                     </Link>

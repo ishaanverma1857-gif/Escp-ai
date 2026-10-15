@@ -150,7 +150,8 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
               y={y + lp.dy}
               textAnchor={lp.anchor}
               fontFamily="var(--font-display)"
-              fontSize="24"
+              fontSize="21"
+              fontWeight="800"
               className="fill-ink"
             >
               {labels[c.key]}
