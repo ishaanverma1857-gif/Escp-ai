@@ -37,6 +37,8 @@ const fr: Dictionary = {
     berlin: "Berlin",
     london: "Londres",
     londonNote: "Ouverture en janvier 2027",
+    mapHint: "Sélectionnez un campus pour le découvrir",
+    explore: "Découvrir",
     mapLabel:
       "Carte reliant les campus ESCP AI de Paris, Turin, Madrid et Berlin, avec Londres comme prochaine antenne.",
   },
@@ -241,10 +243,79 @@ const fr: Dictionary = {
         time: null,
         location: "Londres",
         short: "La communauté ESCP AI s'étend à Londres.",
-        description: "ESCP AI s'installe à Londres et étend sa communauté à un quatrième campus ESCP.",
+        description: "ESCP AI s'installe à Londres et étend sa communauté à un cinquième campus ESCP.",
         partner: null,
         speakers: null,
         audience: null,
+      },
+    },
+  },
+  campusPage: {
+    kicker: "Antenne ESCP AI",
+    upcomingKicker: "Prochaine antenne",
+    follow: "Suivre sur Instagram",
+    noInstagram: "Compte Instagram à venir avec le lancement",
+    campusTitle: "Le campus",
+    cityTitle: "Dans la ville",
+    photoSoon: "Photo à venir",
+    others: "Les autres antennes",
+    back: "Retour à la carte",
+    joinTitle: "Rejoignez le mouvement",
+    joinBody: "Suivez l'antenne pour ses événements, ateliers et AI Days, ou rejoignez ESCP AI pour vous impliquer.",
+    cities: {
+      paris: {
+        country: "France",
+        intro:
+          "C'est à Paris qu'ESCP a été fondée en 1819 et qu'ESCP AI est née. L'antenne parisienne porte les grandes conférences, les partenariats avec les entreprises et les projets inter-campus.",
+        campus: "ESCP Paris",
+        landmarks: [
+          { name: "Tour Eiffel", blurb: "L'icône de fer du Champ-de-Mars, achevée en 1889." },
+          { name: "Le Louvre", blurb: "Le musée le plus visité au monde, derrière sa pyramide de verre." },
+          { name: "Arc de Triomphe", blurb: "Au sommet des Champs-Élysées, place Charles-de-Gaulle." },
+        ],
+      },
+      turin: {
+        country: "Italie",
+        intro:
+          "À Turin, ESCP AI rassemble les étudiants autour de l'IA dans une ville profondément ancrée dans l'ingénierie, le design et l'industrie.",
+        campus: "ESCP Turin",
+        landmarks: [
+          { name: "Mole Antonelliana", blurb: "Le monument emblématique de Turin, qui abrite le Musée national du cinéma." },
+          { name: "Piazza Castello", blurb: "Le cœur historique de la ville, bordé de palais royaux." },
+          { name: "Basilique de Superga", blurb: "Sur sa colline, face à Turin et aux Alpes." },
+        ],
+      },
+      madrid: {
+        country: "Espagne",
+        intro:
+          "L'antenne de Madrid connecte les étudiants d'ESCP à l'écosystème tech et IA espagnol en pleine croissance, à travers événements, ateliers et communauté.",
+        campus: "ESCP Madrid",
+        landmarks: [
+          { name: "Palais royal de Madrid", blurb: "La résidence officielle de la famille royale espagnole." },
+          { name: "Puerta de Alcalá", blurb: "La porte néoclassique à l'entrée du parc du Retiro." },
+          { name: "Plaza Mayor", blurb: "La grande place à arcades de la vieille ville." },
+        ],
+      },
+      berlin: {
+        country: "Allemagne",
+        intro:
+          "ESCP AI Berlin installe l'association dans l'une des capitales européennes des startups, au contact des fondateurs, des bâtisseurs et de l'écosystème IA de la ville.",
+        campus: "ESCP Berlin",
+        landmarks: [
+          { name: "Porte de Brandebourg", blurb: "Le symbole néoclassique de l'unité berlinoise, Pariser Platz." },
+          { name: "Reichstag", blurb: "Le siège du Parlement, couronné de sa coupole de verre." },
+          { name: "Fernsehturm", blurb: "La tour de télévision d'Alexanderplatz, visible dans toute la ville." },
+        ],
+      },
+      london: {
+        country: "Royaume-Uni",
+        intro: "ESCP AI s'installe à Londres en janvier 2027, sur un cinquième campus ESCP.",
+        campus: "ESCP Londres",
+        landmarks: [
+          { name: "Tower Bridge", blurb: "Le pont basculant sur la Tamise, à côté de la Tour de Londres." },
+          { name: "Big Ben", blurb: "La tour de l'horloge du palais de Westminster." },
+          { name: "Cathédrale Saint-Paul", blurb: "Le dôme de Christopher Wren sur Ludgate Hill." },
+        ],
       },
     },
   },

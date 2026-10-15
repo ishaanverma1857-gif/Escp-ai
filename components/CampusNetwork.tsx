@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { campuses, type Campus } from "@/content/site";
 import { entryDelay } from "./motion";
@@ -29,9 +30,9 @@ function arc(a: { x: number; y: number }, b: { x: number; y: number }, bend = 0.
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-type Labels = Record<"paris" | "turin" | "madrid" | "berlin" | "london" | "londonNote" | "mapLabel", string>;
+type Labels = Record<"paris" | "turin" | "madrid" | "berlin" | "london" | "londonNote" | "mapLabel" | "explore", string>;
 
-export default function CampusNetwork({ labels }: { labels: Labels }) {
+export default function CampusNetwork({ labels, locale }: { labels: Labels; locale: string }) {
   const reduce = useReducedMotion();
   const d0 = entryDelay() - 0.2;
   const p = Object.fromEntries(campuses.map((c) => [c.key, project(c)])) as Record<Campus["key"], { x: number; y: number }>;
@@ -164,6 +165,10 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
             transition={{ duration: 0.8, ease: EASE, delay: c.upcoming ? d0 + 1.7 : d0 + 0.3 + i * 0.18 }}
             style={{ transformOrigin: `${x}px ${y}px` }}
           >
+            <Link href={`/${locale}/campuses/${c.key}`} className="campus-node" aria-label={`${labels.explore} ${labels[c.key]}`}>
+            {/* Generous invisible hit area so the node is easy to tap. */}
+            <circle cx={x} cy={y} r="26" fill="transparent" />
+            <circle cx={x} cy={y} r="17" className="campus-focus" fill="none" stroke="var(--color-signal)" strokeWidth="2" />
             {!c.upcoming && !reduce && (
               <circle cx={x} cy={y} r="8" fill="none" stroke="var(--color-signal)" strokeWidth="1">
                 <animate attributeName="r" values="8;26" dur="3s" begin={`${i * 0.9}s`} repeatCount="indefinite" />
@@ -171,6 +176,7 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
               </circle>
             )}
             <circle
+              className="campus-dot"
               cx={x}
               cy={y}
               r={c.upcoming ? 5 : 7}
@@ -185,7 +191,7 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
               fontFamily="var(--font-display)"
               fontSize="21"
               fontWeight="800"
-              className="fill-ink"
+              className="campus-name fill-ink"
               stroke="var(--color-paper)"
               strokeWidth="5"
               strokeLinejoin="round"
@@ -207,6 +213,7 @@ export default function CampusNetwork({ labels }: { labels: Labels }) {
             >
               {c.upcoming ? labels.londonNote : coord(c)}
             </text>
+            </Link>
           </motion.g>
         );
       })}

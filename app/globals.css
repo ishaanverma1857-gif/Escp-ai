@@ -371,3 +371,38 @@
     opacity: 1;
   }
 }
+
+/* Clickable campuses on the hero map */
+.campus-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.campus-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.35s var(--ease-out-quint), fill 0.3s;
+}
+
+.campus-node:hover .campus-dot,
+.campus-node:focus-visible .campus-dot {
+  transform: scale(1.45);
+  fill: var(--color-signal);
+}
+
+.campus-name {
+  transition: fill 0.3s;
+}
+
+.campus-node:hover .campus-name,
+.campus-node:focus-visible .campus-name {
+  fill: var(--color-signal);
+}
+
+.campus-focus {
+  opacity: 0;
+}
+
+.campus-node:focus-visible .campus-focus {
+  opacity: 1;
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import { campuses, people, photo, teamGroups } from "@/content/site";
@@ -109,14 +110,17 @@ export default async function TeamPage({ params }: PageProps<"/[lang]/team">) {
               .filter((c) => !c.upcoming)
               .map((c) => (
                 <StaggerItem key={c.key} className="bg-ink">
-                  <Spotlight colour="rgba(142,168,255,0.16)" className="h-full p-8 md:p-10">
+                  <Link href={`/${lang}/campuses/${c.key}`} className="group block h-full">
+                  <Spotlight colour="rgba(142,168,255,0.16)" className="h-full p-8 transition-colors duration-300 group-hover:bg-ink-2 md:p-10">
                     <h3 className="text-[clamp(2rem,1.6rem+1.8vw,3.2rem)] font-extrabold uppercase leading-none">{dict.campuses[c.key]}</h3>
                     <p className="mt-3 text-sm text-paper/60">
                       {c.lat.toFixed(2)}° N, {Math.abs(c.lon).toFixed(2)}° {c.lon >= 0 ? "E" : "W"}
                     </p>
                     <p className="mt-10 text-paper/70">{t.representative}</p>
                     <p className="text-signal-on-ink">{dict.common.toBeAnnounced}</p>
+                    {c.instagram && <p className="mt-6 font-bold underline decoration-paper/30 underline-offset-[6px] group-hover:decoration-paper">@{c.instagram}</p>}
                   </Spotlight>
+                  </Link>
                 </StaggerItem>
               ))}
           </Stagger>

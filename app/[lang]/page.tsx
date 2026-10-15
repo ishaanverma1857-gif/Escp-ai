@@ -69,8 +69,17 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </div>
           <div className="mx-auto w-full max-w-[26rem] sm:max-w-[30rem] lg:col-span-5 lg:max-w-none">
             <PointerParallax depth={14}>
-              <CampusNetwork labels={dict.campuses} />
+              <CampusNetwork labels={dict.campuses} locale={lang} />
             </PointerParallax>
+            <FadeIn delay={1.2}>
+              <p className="mt-3 flex items-center justify-center gap-2 text-sm font-bold text-royal">
+                <span aria-hidden="true" className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-60" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-signal" />
+                </span>
+                {dict.campuses.mapHint}
+              </p>
+            </FadeIn>
           </div>
         </div>
       </section>
