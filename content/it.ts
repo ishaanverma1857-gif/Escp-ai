@@ -392,9 +392,9 @@ const it: Dictionary = {
     imageSoon: "Immagini in arrivo",
     colourLabel: "Colore",
     products: {
-      hoodie: { name: "Felpa ESCP AI", detail: "Felpa pesante con il logo ESCP AI sul petto." },
-      tshirt: { name: "T-shirt ESCP AI", detail: "T-shirt in cotone con il logo ESCP AI." },
-      cap: { name: "Cappellino ricamato", detail: "Cappellino a sei pannelli con logo ESCP AI ricamato." },
+      hoodie: { name: "Felpa ESCP AI", detail: "Felpa pesante blu navy con la scritta in rilievo “Artificially Incompetent” e il nodo ESCP AI sulla schiena." },
+      tshirt: { name: "T-shirt ESCP AI", detail: "T-shirt bianca in cotone con “Artificially Incompetent” e un ritratto IA astratto stampati sulla schiena." },
+      cap: { name: "Cappellino ricamato", detail: "Cappellino nero slavato con “Artificially Incompetent” ricamato sul davanti." },
     },
     colours: { black: "Nero", white: "Bianco", navy: "Blu navy" },
   },

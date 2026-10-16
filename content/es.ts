@@ -392,9 +392,9 @@ const es: Dictionary = {
     imageSoon: "Imágenes próximamente",
     colourLabel: "Color",
     products: {
-      hoodie: { name: "Sudadera ESCP AI", detail: "Sudadera gruesa con el logo de ESCP AI en el pecho." },
-      tshirt: { name: "Camiseta ESCP AI", detail: "Camiseta de algodón con el logo de ESCP AI." },
-      cap: { name: "Gorra bordada", detail: "Gorra de seis paneles con el logo de ESCP AI bordado." },
+      hoodie: { name: "Sudadera ESCP AI", detail: "Sudadera gruesa azul marino con «Artificially Incompetent» en relieve y el nudo de ESCP AI en la espalda." },
+      tshirt: { name: "Camiseta ESCP AI", detail: "Camiseta blanca de algodón con «Artificially Incompetent» y un retrato abstracto de IA en la espalda." },
+      cap: { name: "Gorra bordada", detail: "Gorra negra lavada con «Artificially Incompetent» bordado en la parte delantera." },
     },
     colours: { black: "Negro", white: "Blanco", navy: "Azul marino" },
   },

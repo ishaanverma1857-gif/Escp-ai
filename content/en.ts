@@ -404,9 +404,9 @@ const en = {
     imageSoon: "Images to be added",
     colourLabel: "Colour",
     products: {
-      hoodie: { name: "ESCP AI Hoodie", detail: "Heavyweight hoodie with the ESCP AI mark on the chest." },
-      tshirt: { name: "ESCP AI T-shirt", detail: "Everyday cotton tee with the ESCP AI mark." },
-      cap: { name: "Embroidered Cap", detail: "Six-panel cap with an embroidered ESCP AI mark." },
+      hoodie: { name: "ESCP AI Hoodie", detail: "Navy heavyweight hoodie with the “Artificially Incompetent” puff print and the ESCP AI knot on the back." },
+      tshirt: { name: "ESCP AI T-shirt", detail: "White cotton tee with “Artificially Incompetent” and an abstract AI portrait printed on the back." },
+      cap: { name: "Embroidered Cap", detail: "Washed black cap with “Artificially Incompetent” embroidered on the front." },
     } as Record<string, { name: string; detail: string }>,
     colours: { black: "Black", white: "White", navy: "Navy" } as Record<string, string>,
   },

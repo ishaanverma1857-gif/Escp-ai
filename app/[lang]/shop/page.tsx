@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { contactHref, getDictionary, hasLocale, localeInfo } from "@/lib/i18n";
 import { products, site } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
-import { Knot } from "@/components/brand";
+import Image from "next/image";
 import { Button } from "@/components/ui";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
@@ -33,10 +33,14 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
               const copy = s.products[p.key];
               return (
                 <StaggerItem key={p.key} as="article" className="group flex flex-col">
-                  {/* Product photos to be added. */}
-                  <div className="flex aspect-[4/5] flex-col items-center justify-center gap-4 rounded-[1.5rem] border-2 border-dashed border-royal/25 bg-fog">
-                    <Knot gap="var(--color-fog)" className="h-14 w-14 text-royal/30" />
-                    <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-royal/60">{s.imageSoon}</p>
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[#efefef]">
+                    <Image
+                      src={p.image}
+                      alt={`${copy.name}: ${copy.detail}`}
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-out-quint)] group-hover:scale-[1.03]"
+                    />
                   </div>
                   <div className="mt-6 flex items-baseline justify-between gap-4">
                     <h2 className="text-[1.75rem] leading-tight">{copy.name}</h2>

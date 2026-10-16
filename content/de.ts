@@ -392,9 +392,9 @@ const de: Dictionary = {
     imageSoon: "Bilder folgen",
     colourLabel: "Farbe",
     products: {
-      hoodie: { name: "ESCP AI Hoodie", detail: "Schwerer Hoodie mit ESCP-AI-Logo auf der Brust." },
-      tshirt: { name: "ESCP AI T-Shirt", detail: "Baumwoll-T-Shirt für jeden Tag mit ESCP-AI-Logo." },
-      cap: { name: "Bestickte Cap", detail: "Six-Panel-Cap mit gesticktem ESCP-AI-Logo." },
+      hoodie: { name: "ESCP AI Hoodie", detail: "Schwerer Hoodie in Navy mit „Artificially Incompetent“ im Puff-Print und dem ESCP-AI-Knoten auf dem Rücken." },
+      tshirt: { name: "ESCP AI T-Shirt", detail: "Weißes Baumwoll-T-Shirt mit „Artificially Incompetent“ und einem abstrakten KI-Porträt auf dem Rücken." },
+      cap: { name: "Bestickte Cap", detail: "Washed-Cap in Schwarz mit gesticktem „Artificially Incompetent“ vorne." },
     },
     colours: { black: "Schwarz", white: "Weiß", navy: "Navy" },
   },
