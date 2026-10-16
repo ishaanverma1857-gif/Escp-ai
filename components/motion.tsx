@@ -15,7 +15,7 @@ const HOME = new RegExp(`^/(${LOCALE_PATTERN})/?$`);
 /** True while the very first page load is the homepage, i.e. the only time the intro curtain plays. */
 export const isIntro = (pathname: string) => introState.first && HOME.test(pathname);
 export const entryDelay = () =>
-  typeof window !== "undefined" && isIntro(window.location.pathname) ? 1.05 : 0.15;
+  typeof window !== "undefined" && isIntro(window.location.pathname) ? 2.7 : 0.15;
 
 /** Respects the OS "reduce motion" setting for every Motion animation below it. */
 export function MotionProvider({ children }: { children: ReactNode }) {

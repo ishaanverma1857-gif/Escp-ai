@@ -180,8 +180,22 @@
   border-bottom-right-radius: 50% 0;
 }
 
+/* Intro: the knot draws (~1.7s), the wordmark fades in, both hold, then the curtain lifts at 2.4s. */
 .curtain--intro {
-  animation: curtain-lift 1s cubic-bezier(0.76, 0, 0.24, 1) 0.75s forwards;
+  animation: curtain-lift 1.1s cubic-bezier(0.76, 0, 0.24, 1) 2.4s forwards;
+}
+
+.curtain--intro .knot-draw ellipse {
+  animation-duration: 1.4s;
+}
+
+.curtain--intro .knot-draw ellipse:nth-of-type(2),
+.curtain--intro .knot-draw g g:last-child ellipse {
+  animation-delay: 0.3s;
+}
+
+.curtain--intro .curtain-word {
+  animation: fade-in 0.7s ease 1s forwards;
 }
 
 .curtain--nav {
@@ -270,7 +284,7 @@
 }
 
 .page-enter--intro {
-  animation-delay: 0.95s;
+  animation-delay: 2.6s;
 }
 
 @keyframes page-in {
