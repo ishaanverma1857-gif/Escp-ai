@@ -14,6 +14,7 @@ const de: Dictionary = {
     services: "Services",
     join: "Mitmachen",
     shop: "Shop",
+    builtBy: "Website-Team",
     login: "Mitglieder-Login",
     menu: "Menü",
     close: "Schließen",

@@ -26,6 +26,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
     { path: "/events", label: nav.events },
     { path: "/services", label: nav.services },
     { path: "/shop", label: nav.shop },
+    { path: "/built-by", label: nav.builtBy },
   ];
 
   const rest = pathname.split("/").slice(2).join("/");
@@ -95,14 +96,14 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             <Logo gap={open ? "var(--color-ink)" : "var(--color-paper)"} />
           </Link>
 
-          <nav aria-label={nav.primary} className="hidden lg:block">
+          <nav aria-label={nav.primary} className="hidden xl:block">
             <ul className="flex items-center gap-1">
               {links.map((l) => (
                 <li key={l.path} className="relative">
                   <Link
                     href={`/${locale}${l.path}`}
                     aria-current={isActive(l.path) ? "page" : undefined}
-                    className="relative block px-3.5 py-2 text-[0.95rem] text-ink/80 transition-colors hover:text-ink aria-[current=page]:text-ink"
+                    className="relative block whitespace-nowrap px-3.5 py-2 text-[0.95rem] text-ink/80 transition-colors hover:text-ink aria-[current=page]:text-ink"
                   >
                     {l.label}
                     {isActive(l.path) && (
@@ -118,23 +119,23 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             </ul>
           </nav>
 
-          <div className="hidden items-center gap-5 lg:flex">
+          <div className="hidden items-center gap-5 xl:flex">
             <CartButton label={nav.cart} className="-mx-2 text-ink/80 hover:text-ink" />
             <LanguageMenu locale={locale} label={nav.language} hrefFor={langHref} />
-            <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline text-[0.95rem] text-ink/80 hover:text-ink">
+            <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline whitespace-nowrap text-[0.95rem] text-ink/80 hover:text-ink">
               {nav.login}
             </Link>
             <Magnetic>
             <Link
               href={`/${locale}/join`}
-              className="inline-flex min-h-11 items-center rounded-full bg-royal px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-ink"
+              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-royal px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-ink"
             >
               {nav.join}
             </Link>
             </Magnetic>
           </div>
 
-          <div className="flex items-center gap-1 lg:hidden">
+          <div className="flex items-center gap-1 xl:hidden">
           {!open && <CartButton label={nav.cart} className="text-ink" />}
           <button
             ref={menuButton}
@@ -142,7 +143,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className={`relative z-[55] -mr-2 flex h-12 min-w-12 items-center justify-center gap-3 rounded-full px-3 text-[0.95rem] font-bold transition-colors lg:hidden ${
+            className={`relative z-[55] -mr-2 flex h-12 min-w-12 items-center justify-center gap-3 rounded-full px-3 text-[0.95rem] font-bold transition-colors xl:hidden ${
               open ? "text-paper" : "text-ink"
             }`}
           >
@@ -163,7 +164,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             role="dialog"
             aria-modal="true"
             aria-label={nav.menu}
-            className="on-ink fixed inset-0 z-[52] flex flex-col overflow-y-auto bg-ink pt-24 text-paper lg:hidden"
+            className="on-ink fixed inset-0 z-[52] flex flex-col overflow-y-auto bg-ink pt-24 text-paper xl:hidden"
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}

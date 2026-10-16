@@ -12,6 +12,7 @@ const en = {
     services: "Services",
     join: "Join us",
     shop: "Shop",
+    builtBy: "Website team",
     login: "Member login",
     menu: "Menu",
     close: "Close",
