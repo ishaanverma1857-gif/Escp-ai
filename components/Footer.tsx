@@ -73,7 +73,13 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
       </div>
       <div className="container-site relative flex flex-col gap-2 border-t border-paper/12 py-8 text-sm text-paper/60 sm:flex-row sm:justify-between">
         <p>{footer.rights}</p>
-        <p>{footer.independent}</p>
+        <p className="flex flex-wrap gap-x-2">
+          <span>{footer.independent}</span>
+          <span aria-hidden="true" className="hidden sm:inline">·</span>
+          <Link href={`/${locale}/built-by`} className="link-underline text-paper/80 hover:text-paper">
+            {dict.builders.credit}
+          </Link>
+        </p>
       </div>
     </footer>
   );

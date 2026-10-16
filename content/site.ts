@@ -149,3 +149,20 @@ export const products = [
   { key: "tshirt", price: 29, colour: "#FFFFFF", colourKey: "white", image: "/shop/tshirt-ai-incompetent.webp", sizes: ["S", "M", "L", "XL"] },
   { key: "cap", price: 25, colour: "#14161B", colourKey: "black", image: "/shop/cap-ai-incompetent.webp", sizes: [] },
 ] as const;
+
+/**
+ * The student team that built this website. Photos go in public/builders/ (e.g. "/builders/filippo.webp");
+ * videos in public/builders/ too (e.g. "/builders/video-1.mp4"). Leave null until they arrive.
+ */
+export const builders = {
+  instagram: "artificially.incompetent.escp",
+  members: [
+    { id: "filippo", name: "Filippo", role: "lead", photo: null as string | null },
+    { id: "constantin", name: "Constantin", role: "finance", photo: null as string | null },
+    { id: "ishaan", name: "Ishaan", role: "cto", photo: null as string | null },
+  ],
+  videos: [
+    { src: null as string | null, poster: null as string | null },
+    { src: null as string | null, poster: null as string | null },
+  ],
+} as const;

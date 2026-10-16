@@ -17,7 +17,8 @@ Montserrat (display) + Atkinson Hyperlegible Next (body). Read `node_modules/nex
 
 ## Where things live
 - `content/{en,fr,it,es,de}.ts` — all copy (same shape, typed `Dictionary`). `lib/locales.ts` — language registry (client-safe). `content/site.ts` — links, team, campuses, events, products, impact.
-- `app/[lang]/…` — pages: home, team, partners, events (+ `[slug]`), services, join, shop, login, `campuses/[campus]`.
+- `app/[lang]/…` — pages: home, team, partners, events (+ `[slug]`), services, join, shop, login, `campuses/[campus]`,
+  `built-by` (the website team "Artificially Incompetent"; photos/videos go in `public/builders/`, set in `builders` in `content/site.ts`).
 - `components/brand.tsx` — "ESCP | AI" wordmark and woven orbit symbol (`Knot`).
 - `components/fx.tsx` — FlowLines (pre-rendered to an image for performance; never animate canvases per frame),
   DottedArc, Countdown, ScrollText, VelocityMarquee, Magnetic, Spotlight, Tilt, PointerParallax, ScrollKnot, SmoothScroll.
