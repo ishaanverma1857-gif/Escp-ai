@@ -162,7 +162,7 @@ export const builders = {
     { id: "ishaan", name: "Ishaan", role: "cto", photo: null as string | null },
   ],
   videos: [
-    { src: null as string | null, poster: null as string | null },
-    { src: null as string | null, poster: null as string | null },
+    { src: "/builders/build-film-1.mp4" as string | null, webm: "/builders/build-film-1.webm" as string | null, poster: "/builders/build-film-1-poster.webp" as string | null },
+    { src: null as string | null, webm: null as string | null, poster: null as string | null },
   ],
 } as const;

@@ -93,14 +93,17 @@ export default async function BuiltByPage({ params }: PageProps<"/[lang]/built-b
               <StaggerItem key={i}>
                 {v.src ? (
                   <video
-                    src={v.src}
                     poster={v.poster ?? undefined}
                     controls
                     playsInline
                     preload="metadata"
                     aria-label={`${b.videoLabel} ${i + 1}`}
                     className="aspect-video w-full rounded-[1.5rem] bg-ink object-cover"
-                  />
+                  >
+                    {/* WebM first for browsers without H.264; every other browser uses the MP4. */}
+                    {v.webm && <source src={v.webm} type="video/webm" />}
+                    <source src={v.src} type="video/mp4" />
+                  </video>
                 ) : (
                   <div className="on-ink relative flex aspect-video w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-[1.5rem] bg-ink text-paper">
                     <FlowLines tone="dark" preset="soft" className="opacity-60" />
