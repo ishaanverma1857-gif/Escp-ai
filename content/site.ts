@@ -145,7 +145,7 @@ export const events: EventRecord[] = [
 ];
 
 export const products = [
-  { key: "hoodie", price: 49, colour: "#1B2A4A", colourKey: "navy", image: "/shop/hoodie-ai-incompetent.webp" },
-  { key: "tshirt", price: 29, colour: "#FFFFFF", colourKey: "white", image: "/shop/tshirt-ai-incompetent.webp" },
-  { key: "cap", price: 25, colour: "#14161B", colourKey: "black", image: "/shop/cap-ai-incompetent.webp" },
+  { key: "hoodie", price: 49, colour: "#1B2A4A", colourKey: "navy", image: "/shop/hoodie-ai-incompetent.webp", sizes: ["S", "M", "L", "XL"] },
+  { key: "tshirt", price: 29, colour: "#FFFFFF", colourKey: "white", image: "/shop/tshirt-ai-incompetent.webp", sizes: ["S", "M", "L", "XL"] },
+  { key: "cap", price: 25, colour: "#14161B", colourKey: "black", image: "/shop/cap-ai-incompetent.webp", sizes: [] },
 ] as const;

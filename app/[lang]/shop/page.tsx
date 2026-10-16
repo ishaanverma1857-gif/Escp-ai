@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { contactHref, getDictionary, hasLocale, localeInfo } from "@/lib/i18n";
-import { products, site } from "@/content/site";
+import { getDictionary, hasLocale, localeInfo } from "@/lib/i18n";
+import { products } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
 import Image from "next/image";
-import { Button } from "@/components/ui";
+import { AddToCart } from "@/components/Cart";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/shop">): Promise<Metadata> {
@@ -18,9 +18,6 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
   const dict = getDictionary(lang);
   const s = dict.shop;
   const price = new Intl.NumberFormat(lang === "en" ? "en-IE" : localeInfo[lang].intl, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
-  // Orders go to the shop URL once it exists, otherwise by email; until either is confirmed the button waits.
-  const orderHref = (name: string) =>
-    site.shopOrderUrl ?? (site.email ? contactHref(lang, `${dict.mail.order}: ${name}`) : null);
 
   return (
     <>
@@ -59,9 +56,7 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
                     </span>
                   </p>
                   <div className="mt-6">
-                    <Button href={orderHref(copy.name)} variant="secondary" disabledLabel={s.orderSoon}>
-                      {s.order}
-                    </Button>
+                    <AddToCart product={p.key} sizes={p.sizes} copy={s.cart} />
                   </div>
                 </StaggerItem>
               );

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./ui";
 import { Magnetic } from "./fx";
+import { CartButton } from "./Cart";
 import { localeInfo, locales, type Locale } from "@/lib/locales";
 import type { Dictionary } from "@/content/en";
 
@@ -118,6 +119,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
           </nav>
 
           <div className="hidden items-center gap-5 lg:flex">
+            <CartButton label={nav.cart} className="-mx-2 text-ink/80 hover:text-ink" />
             <LanguageMenu locale={locale} label={nav.language} hrefFor={langHref} />
             <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline text-[0.95rem] text-ink/80 hover:text-ink">
               {nav.login}
@@ -132,6 +134,8 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             </Magnetic>
           </div>
 
+          <div className="flex items-center gap-1 lg:hidden">
+          {!open && <CartButton label={nav.cart} className="text-ink" />}
           <button
             ref={menuButton}
             type="button"
@@ -148,6 +152,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
               <span className={`absolute left-0 h-[2px] w-6 bg-current transition-transform duration-300 ${open ? "top-[5px] -rotate-45" : "top-[10px]"}`} />
             </span>
           </button>
+          </div>
         </div>
       </header>
 

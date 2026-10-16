@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { display, sans } from "@/lib/fonts";
 import { getDictionary, hasLocale, localeInfo, locales } from "@/lib/i18n";
+import { products } from "@/content/site";
+import { CartDrawer } from "@/components/Cart";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion";
@@ -46,6 +48,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             {children}
           </main>
           <Footer locale={lang} dict={dict} />
+          <CartDrawer
+            copy={dict.shop.cart}
+            orderSoon={dict.shop.orderSoon}
+            intl={lang === "en" ? "en-IE" : localeInfo[lang].intl}
+            products={products.map((p) => ({ key: p.key, name: dict.shop.products[p.key].name, price: p.price, image: p.image }))}
+          />
         </MotionProvider>
       </body>
     </html>
