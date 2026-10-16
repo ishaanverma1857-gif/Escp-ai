@@ -1,5 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { enUS, frFR } from "@clerk/localizations";
+import { deDE, enUS, esES, frFR, itIT } from "@clerk/localizations";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
 import { authEnabled } from "@/lib/auth";
@@ -36,7 +36,7 @@ export default async function AccountLayout({ children, params }: LayoutProps<"/
 
   return (
     <ClerkProvider
-      localization={lang === "fr" ? frFR : enUS}
+      localization={{ en: enUS, fr: frFR, it: itIT, es: esES, de: deDE }[lang]}
       appearance={appearance as never}
       signInUrl={`/${lang}/sign-in`}
       signUpUrl={`/${lang}/sign-up`}

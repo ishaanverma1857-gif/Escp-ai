@@ -16,8 +16,7 @@ const en = {
     menu: "Menu",
     close: "Close",
     skip: "Skip to content",
-    switchTo: "Français",
-    switchLabel: "Lire le site en français",
+    language: "Language",
     primary: "Main navigation",
   },
   common: {

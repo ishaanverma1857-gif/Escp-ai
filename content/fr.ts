@@ -18,8 +18,7 @@ const fr: Dictionary = {
     menu: "Menu",
     close: "Fermer",
     skip: "Aller au contenu",
-    switchTo: "English",
-    switchLabel: "Read the site in English",
+    language: "Langue",
     primary: "Navigation principale",
   },
   common: {

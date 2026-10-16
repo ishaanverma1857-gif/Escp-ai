@@ -2,6 +2,7 @@
 
 import { MotionConfig, motion, useInView, useReducedMotion, animate } from "motion/react";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { LOCALE_PATTERN, localeInfo, type Locale } from "@/lib/locales";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -10,7 +11,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * page for about a second, so entrance animations wait for it to lift.
  */
 export const introState = { first: true };
-const HOME = /^\/(en|fr)\/?$/;
+const HOME = new RegExp(`^/(${LOCALE_PATTERN})/?$`);
 /** True while the very first page load is the homepage, i.e. the only time the intro curtain plays. */
 export const isIntro = (pathname: string) => introState.first && HOME.test(pathname);
 export const entryDelay = () =>
@@ -162,7 +163,7 @@ export function FadeIn({ children, className, delay = 0 }: { children: ReactNode
 }
 
 /** Counts up to a number when it first becomes visible. */
-export function CountUp({ value, suffix = "", locale = "en" }: { value: number; suffix?: string; locale?: string }) {
+export function CountUp({ value, suffix = "", locale = "en" }: { value: number; suffix?: string; locale?: Locale }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const reduce = useReducedMotion();
@@ -180,7 +181,7 @@ export function CountUp({ value, suffix = "", locale = "en" }: { value: number; 
 
   return (
     <span ref={ref} className="tabular-nums">
-      {new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-GB").format(shown)}
+      {new Intl.NumberFormat(localeInfo[locale].intl).format(shown)}
       {suffix}
     </span>
   );

@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./ui";
 import { Magnetic } from "./fx";
-import type { Locale } from "@/lib/i18n";
+import { localeInfo, locales, type Locale } from "@/lib/locales";
 import type { Dictionary } from "@/content/en";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -30,7 +30,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
   const rest = pathname.split("/").slice(2).join("/");
   const current = `/${rest}`;
   const isActive = (path: string) => current === path || current.startsWith(`${path}/`);
-  const switchHref = `/${locale === "en" ? "fr" : "en"}${rest ? `/${rest}` : ""}`;
+  const langHref = (l: Locale) => `/${l}${rest ? `/${rest}` : ""}`;
 
   useEffect(() => {
     let last = window.scrollY;
@@ -118,9 +118,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
           </nav>
 
           <div className="hidden items-center gap-5 lg:flex">
-            <Link href={switchHref} hrefLang={locale === "en" ? "fr" : "en"} aria-label={nav.switchLabel} className="link-underline text-[0.95rem] text-ink/80 hover:text-ink">
-              {locale === "en" ? "FR" : "EN"}
-            </Link>
+            <LanguageMenu locale={locale} label={nav.language} hrefFor={langHref} />
             <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline text-[0.95rem] text-ink/80 hover:text-ink">
               {nav.login}
             </Link>
@@ -199,14 +197,117 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
                 <Link href={`/${locale}/login`} className="text-lg underline decoration-paper/30 underline-offset-[6px]">
                   {nav.login}
                 </Link>
-                <Link href={switchHref} hrefLang={locale === "en" ? "fr" : "en"} className="text-lg underline decoration-paper/30 underline-offset-[6px]">
-                  {nav.switchTo}
-                </Link>
+              </motion.div>
+              <motion.div
+                className="mt-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.55 }}
+              >
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-paper/60">{nav.language}</p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {locales.map((l) => (
+                    <li key={l}>
+                      <Link
+                        href={langHref(l)}
+                        hrefLang={l}
+                        lang={l}
+                        aria-current={l === locale ? "true" : undefined}
+                        className="inline-flex min-h-11 items-center rounded-full border border-paper/25 px-4 text-base transition-colors aria-[current=true]:border-paper aria-[current=true]:bg-paper aria-[current=true]:text-ink"
+                      >
+                        {localeInfo[l].name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function LanguageMenu({ locale, label, hrefFor }: { locale: Locale; label: string; hrefFor: (l: Locale) => string }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        button.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={root}
+      className="relative"
+      onBlur={(e) => {
+        if (!root.current?.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      <button
+        ref={button}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="language-menu"
+        aria-label={`${label}: ${localeInfo[locale].name}`}
+        className="flex min-h-11 items-center gap-1.5 text-[0.95rem] font-bold uppercase text-ink/80 transition-colors hover:text-ink"
+      >
+        {locale}
+        <svg aria-hidden="true" viewBox="0 0 10 6" className={`h-1.5 w-2.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}>
+          <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            id="language-menu"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: EASE }}
+            className="absolute right-0 top-full mt-2 min-w-44 rounded-2xl border border-line bg-paper p-1.5 shadow-[0_18px_40px_-18px_rgba(11,27,77,0.35)]"
+          >
+            {locales.map((l) => (
+              <li key={l}>
+                <Link
+                  href={hrefFor(l)}
+                  hrefLang={l}
+                  lang={l}
+                  aria-current={l === locale ? "true" : undefined}
+                  className="flex items-center justify-between gap-4 rounded-xl px-3.5 py-2.5 text-[0.95rem] text-ink/80 transition-colors hover:bg-fog hover:text-ink aria-[current=true]:font-bold aria-[current=true]:text-royal"
+                >
+                  {localeInfo[l].name}
+                  <span className="text-xs font-bold uppercase tracking-[0.15em] text-slate">{l}</span>
+                </Link>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

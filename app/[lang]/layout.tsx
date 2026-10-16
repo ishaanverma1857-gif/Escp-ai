@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { display, sans } from "@/lib/fonts";
-import { getDictionary, hasLocale, locales } from "@/lib/i18n";
+import { getDictionary, hasLocale, localeInfo, locales } from "@/lib/i18n";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { MotionProvider } from "@/components/motion";
@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
   return {
     title: { default: meta.title, template: "%s — ESCP AI" },
     description: meta.description,
-    alternates: { languages: { en: "/en", fr: "/fr" } },
-    openGraph: { title: meta.title, description: meta.description, siteName: "ESCP AI", locale: lang === "fr" ? "fr_FR" : "en_GB", type: "website" },
+    alternates: { languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])) },
+    openGraph: { title: meta.title, description: meta.description, siteName: "ESCP AI", locale: localeInfo[lang].og, type: "website" },
   };
 }
 

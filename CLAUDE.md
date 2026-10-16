@@ -1,6 +1,6 @@
 # ESCP AI website — project notes
 
-Bilingual (EN/FR) site for ESCP AI, the inter-campus student AI society of ESCP Business School.
+Multilingual (EN/FR/IT/ES/DE) site for ESCP AI, the inter-campus student AI society of ESCP Business School.
 Live on Vercel, auto-deploys from `main`. Repo: `ishaanverma1857-gif/Escp-ai`.
 
 @AGENTS.md
@@ -16,7 +16,7 @@ Next.js 16 App Router (Cache Components on, `proxy.ts` for locale redirect), Tai
 Montserrat (display) + Atkinson Hyperlegible Next (body). Read `node_modules/next/dist/docs/` before changing Next APIs.
 
 ## Where things live
-- `content/en.ts`, `content/fr.ts` — all copy (same shape). `content/site.ts` — links, team, campuses, events, products, impact.
+- `content/{en,fr,it,es,de}.ts` — all copy (same shape, typed `Dictionary`). `lib/locales.ts` — language registry (client-safe). `content/site.ts` — links, team, campuses, events, products, impact.
 - `app/[lang]/…` — pages: home, team, partners, events (+ `[slug]`), services, join, shop, login, `campuses/[campus]`.
 - `components/brand.tsx` — "ESCP | AI" wordmark and woven orbit symbol (`Knot`).
 - `components/fx.tsx` — FlowLines (pre-rendered to an image for performance; never animate canvases per frame),
@@ -35,5 +35,5 @@ texture, dotted arcs. Instagram: @escp.ai (Paris/main), @escp.ai_turin, @escp.ai
 - Mole Antonelliana photo (Turin landmark 1) — both uploads were watermarked Adobe Stock previews; need a free-licence one.
 - `content/site.ts` nulls: official email, member platform URL, shop/order URL, application form URL, KPMG registration link,
   verified impact figures (events, members, companies, projects). Full WhatsApp group link from the Instagram bio.
-- Native French review of translated copy. Confirm "Macro De Curtis" spelling (maybe "Marco").
+- Native review of the FR/IT/ES/DE copy. Confirm "Macro De Curtis" spelling (maybe "Marco").
 - Featured event: KPMG, Tue 20 Oct 2026 17:45, Campus Champerret, Amphi Étienne Marcel (countdown on the homepage).

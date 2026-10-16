@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { contactHref, getDictionary, hasLocale } from "@/lib/i18n";
+import { contactHref, getDictionary, hasLocale, localeInfo } from "@/lib/i18n";
 import { products, site } from "@/content/site";
 import PageHeader from "@/components/PageHeader";
 import { Knot } from "@/components/brand";
@@ -17,7 +17,7 @@ export default async function ShopPage({ params }: PageProps<"/[lang]/shop">) {
   if (!hasLocale(lang)) notFound();
   const dict = getDictionary(lang);
   const s = dict.shop;
-  const price = new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-IE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  const price = new Intl.NumberFormat(lang === "en" ? "en-IE" : localeInfo[lang].intl, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
   // Orders go to the shop URL once it exists, otherwise by email; until either is confirmed the button waits.
   const orderHref = (name: string) =>
     site.shopOrderUrl ?? (site.email ? contactHref(lang, `${dict.mail.order}: ${name}`) : null);

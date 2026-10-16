@@ -1,19 +1,17 @@
 import en from "@/content/en";
 import fr from "@/content/fr";
+import it from "@/content/it";
+import es from "@/content/es";
+import de from "@/content/de";
 import { site } from "@/content/site";
 
-export const locales = ["en", "fr"] as const;
-export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = "en";
+import { localeInfo, type Locale } from "./locales";
 
-const dictionaries = { en, fr };
+export * from "./locales";
 
-export const hasLocale = (value: string): value is Locale =>
-  (locales as readonly string[]).includes(value);
+const dictionaries = { en, fr, it, es, de };
 
 export const getDictionary = (locale: Locale) => dictionaries[locale];
-
-export const otherLocale = (locale: Locale): Locale => (locale === "en" ? "fr" : "en");
 
 /** Prefix an internal path with the locale: href("fr", "/events") → "/fr/events". */
 export const href = (locale: Locale, path = "/") =>
@@ -30,7 +28,7 @@ export function contactHref(locale: Locale, subject: string) {
 }
 
 export function formatDate(locale: Locale, iso: string, options: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat(locale === "fr" ? "fr-FR" : "en-GB", { timeZone: "Europe/Paris", ...options }).format(
+  return new Intl.DateTimeFormat(localeInfo[locale].intl, { timeZone: "Europe/Paris", ...options }).format(
     new Date(`${iso}T12:00:00Z`),
   );
 }
