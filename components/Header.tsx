@@ -87,7 +87,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
           scrolled && !open ? "bg-paper/95 shadow-[0_1px_0_var(--color-line)]" : "bg-transparent"
         } ${hidden && !open ? "-translate-y-full" : "translate-y-0"}`}
       >
-        <div className="container-site flex h-[4.5rem] items-center justify-between gap-6">
+        <div className="container-site flex h-[4.5rem] items-center justify-between gap-3 xl:gap-6">
           <Link
             href={`/${locale}`}
             className={`relative z-[55] transition-colors ${open ? "text-paper" : "text-ink"}`}
@@ -96,20 +96,20 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             <Logo gap={open ? "var(--color-ink)" : "var(--color-paper)"} />
           </Link>
 
-          <nav aria-label={nav.primary} className="hidden xl:block">
+          <nav aria-label={nav.primary} className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {links.map((l) => (
                 <li key={l.path} className="relative">
                   <Link
                     href={`/${locale}${l.path}`}
                     aria-current={isActive(l.path) ? "page" : undefined}
-                    className="relative block whitespace-nowrap px-3.5 py-2 text-[0.95rem] text-ink/80 transition-colors hover:text-ink aria-[current=page]:text-ink"
+                    className="relative block whitespace-nowrap px-2 py-2 text-[0.875rem] xl:px-3.5 xl:text-[0.95rem] text-ink/80 transition-colors hover:text-ink aria-[current=page]:text-ink"
                   >
                     {l.label}
                     {isActive(l.path) && (
                       <motion.span
                         layoutId="nav-active"
-                        className="absolute inset-x-3.5 -bottom-0.5 h-[2px] rounded-full bg-signal"
+                        className="absolute inset-x-2 -bottom-0.5 xl:inset-x-3.5 h-[2px] rounded-full bg-signal"
                         transition={{ type: "spring", stiffness: 420, damping: 36 }}
                       />
                     )}
@@ -119,23 +119,34 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             </ul>
           </nav>
 
-          <div className="hidden items-center gap-5 xl:flex">
+          <div className="hidden items-center gap-2 lg:flex xl:gap-5">
             <CartButton label={nav.cart} className="-mx-2 text-ink/80 hover:text-ink" />
             <LanguageMenu locale={locale} label={nav.language} hrefFor={langHref} />
-            <Link href={`/${locale}/login`} aria-current={isActive("/login") ? "page" : undefined} className="link-underline whitespace-nowrap text-[0.95rem] text-ink/80 hover:text-ink">
-              {nav.login}
+            {/* Tablet widths show a person icon; the full label returns on wider screens. */}
+            <Link
+              href={`/${locale}/login`}
+              aria-current={isActive("/login") ? "page" : undefined}
+              aria-label={nav.login}
+              title={nav.login}
+              className="flex h-11 min-w-11 items-center justify-center whitespace-nowrap text-[0.95rem] text-ink/80 hover:text-ink xl:h-auto xl:min-w-0"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="h-6 w-6 xl:hidden">
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20a7 7 0 0 1 14 0" />
+              </svg>
+              <span className="link-underline hidden xl:inline">{nav.login}</span>
             </Link>
             <Magnetic>
             <Link
               href={`/${locale}/join`}
-              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-royal px-5 text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-ink"
+              className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-royal px-4 text-[0.875rem] xl:px-5 xl:text-[0.95rem] font-bold text-paper transition-colors duration-300 hover:bg-ink"
             >
               {nav.join}
             </Link>
             </Magnetic>
           </div>
 
-          <div className="flex items-center gap-1 xl:hidden">
+          <div className="flex items-center gap-1 lg:hidden">
           {!open && <CartButton label={nav.cart} className="text-ink" />}
           <button
             ref={menuButton}
@@ -143,7 +154,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className={`relative z-[55] -mr-2 flex h-12 min-w-12 items-center justify-center gap-3 rounded-full px-3 text-[0.95rem] font-bold transition-colors xl:hidden ${
+            className={`relative z-[55] -mr-2 flex h-12 min-w-12 items-center justify-center gap-3 rounded-full px-3 text-[0.95rem] font-bold transition-colors lg:hidden ${
               open ? "text-paper" : "text-ink"
             }`}
           >
@@ -164,7 +175,7 @@ export default function Header({ locale, nav }: { locale: Locale; nav: Dictionar
             role="dialog"
             aria-modal="true"
             aria-label={nav.menu}
-            className="on-ink fixed inset-0 z-[52] flex flex-col overflow-y-auto bg-ink pt-24 text-paper xl:hidden"
+            className="on-ink fixed inset-0 z-[52] flex flex-col overflow-y-auto bg-ink pt-24 text-paper lg:hidden"
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
