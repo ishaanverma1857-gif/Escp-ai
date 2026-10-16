@@ -40,6 +40,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   return (
     <html lang={lang} className={`${display.variable} ${sans.variable}`}>
       <body className="flex min-h-dvh flex-col">
+        {/* Runs before the browser restores the old scroll position on reload, so pages always open at the top. */}
+        <script dangerouslySetInnerHTML={{ __html: "history.scrollRestoration='manual';scrollTo(0,0)" }} />
         <MotionProvider>
           <SmoothScroll />
           <ScrollProgress />

@@ -56,9 +56,16 @@ export function SmoothScroll() {
     };
   }, [reduce]);
 
-  // New page starts at the top.
+  // Every page opens at the top, including after a reload or the back button
+  // (the browser's own scroll restoration is switched off in the layout).
   useEffect(() => {
-    window.__lenis?.scrollTo(0, { immediate: true, force: true });
+    const toTop = () => {
+      window.__lenis?.scrollTo(0, { immediate: true, force: true });
+      window.scrollTo(0, 0);
+    };
+    toTop();
+    const frame = requestAnimationFrame(toTop);
+    return () => cancelAnimationFrame(frame);
   }, [pathname]);
 
   return null;
