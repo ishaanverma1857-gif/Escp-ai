@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { site } from "@/content/site";
-import { sortedEvents } from "@/lib/events";
+import { eventCards } from "@/lib/event-store";
 import PageHeader from "@/components/PageHeader";
 import Timeline from "@/components/Timeline";
 import { Button } from "@/components/ui";
@@ -19,6 +19,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
   if (!hasLocale(lang)) notFound();
   const dict = getDictionary(lang);
   const ev = dict.events;
+  const cards = await eventCards(lang);
   const subscribeHref = site.instagram ? `https://instagram.com/${site.instagram}` : href(lang, "/join#contact");
 
   return (
@@ -36,8 +37,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
           <MaskedLines as="h2" inView lines={[ev.calendarTitle]} className="text-h2" />
           <div className="mt-14">
             <Timeline>
-              {sortedEvents().map((e) => {
-                const c = ev.items[e.slug];
+              {cards.map((e) => {
                 return (
                   <li key={e.slug} className="relative">
                     <Reveal y={20}>
@@ -45,7 +45,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                         href={href(lang, `/events/${e.slug}`)}
                         className="group grid gap-3 pb-14 pl-10 md:grid-cols-[16rem_1fr] md:gap-0 md:pl-0"
                       >
-                        <span className="text-lg font-bold text-royal md:pr-10 md:pt-1 md:text-right">{c.when}</span>
+                        <span className="text-lg font-bold text-royal md:pr-10 md:pt-1 md:text-right">{e.when}</span>
                         <span
                           aria-hidden="true"
                           className={`absolute left-0 top-[0.45rem] h-4 w-4 rounded-full border-2 transition-colors duration-300 md:left-[16rem] ${
@@ -54,9 +54,9 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                         />
                         <span className="md:pl-12">
                           <span className="block font-display text-[clamp(1.5rem,1.2rem+1.2vw,2.2rem)] font-extrabold uppercase leading-[1.1] tracking-[-0.01em] text-royal transition-colors duration-300 group-hover:text-signal">
-                            {c.title}
+                            {e.title}
                           </span>
-                          <span className="mt-3 block max-w-[56ch] text-lead text-slate">{c.short}</span>
+                          <span className="mt-3 block max-w-[56ch] text-lead text-slate">{e.short}</span>
                           <span className="mt-4 inline-block font-bold underline decoration-ink/25 underline-offset-[6px] transition-colors group-hover:decoration-signal">
                             {dict.common.viewDetails}
                           </span>

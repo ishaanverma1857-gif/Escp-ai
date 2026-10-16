@@ -29,7 +29,7 @@ const withClerk = clerkMiddleware((_auth, request) => localeRedirect(request));
 const authEnabled = !!process.env.CLERK_SECRET_KEY && !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 // Only the account pages need Clerk; the public site never touches it, so it stays as fast as before.
-const ACCOUNT_ROUTES = new RegExp(`^/(${LOCALE_PATTERN})/(sign-in|sign-up|account)(/|$)`);
+const ACCOUNT_ROUTES = new RegExp(`^/(${LOCALE_PATTERN})/(sign-in|sign-up|account|dashboard)(/|$)`);
 
 export function proxy(request: NextRequest, event: NextFetchEvent) {
   if (authEnabled && ACCOUNT_ROUTES.test(request.nextUrl.pathname)) return withClerk(request, event);

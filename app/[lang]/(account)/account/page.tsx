@@ -5,6 +5,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { getDictionary, hasLocale, href, type Locale } from "@/lib/i18n";
 import { isConfirmedMember, isEscpEmail } from "@/lib/auth";
+import { roleFrom } from "@/lib/viewer";
 import { Button } from "@/components/ui";
 import { Knot } from "@/components/brand";
 import { FlowLines, Spotlight } from "@/components/fx";
@@ -66,7 +67,7 @@ async function AccountContent({ lang }: { lang: Locale }) {
     );
   }
 
-  const member = isConfirmedMember(user.publicMetadata);
+  const member = isConfirmedMember(user.publicMetadata) || roleFrom(user.publicMetadata) !== null;
 
   return (
     <>
@@ -87,10 +88,15 @@ async function AccountContent({ lang }: { lang: Locale }) {
             <Knot gap="var(--color-ink)" className="h-12 w-12 text-paper" />
             <h2 className="mt-10 text-[clamp(1.8rem,1.4rem+1.6vw,2.6rem)] font-extrabold uppercase leading-none">{a.memberTitle}</h2>
             <p className="mt-4 max-w-[40ch] text-lead text-paper/80">{member ? a.memberBody : a.memberPending}</p>
-            <div className="mt-auto pt-10">
-              <Button href={member ? href(lang, "/account/members") : null} variant="onInk">
-                {a.memberCta}
+            <div className="mt-auto flex flex-wrap gap-3 pt-10">
+              <Button href={member ? href(lang, "/dashboard") : null} variant="onInk">
+                {a.dashboardCta}
               </Button>
+              {member && (
+                <Button href={href(lang, "/account/members")} variant="onInkOutline">
+                  {a.memberCta}
+                </Button>
+              )}
             </div>
           </Spotlight>
         </article>

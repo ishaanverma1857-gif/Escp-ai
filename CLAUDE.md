@@ -27,6 +27,15 @@ Montserrat (display) + Atkinson Hyperlegible Next (body). Read `node_modules/nex
 - `public/team/*.webp` headshots; `public/campuses/<city>/{campus,1,2,3}.webp`. When replacing an image, use a NEW filename
   (image caches key on URL).
 
+## Dashboard prototype (`app/[lang]/dashboard/…`, English only)
+- Postgres via Neon (Vercel Marketplace, env `DATABASE_URL`), `pg` driver in `lib/db.ts`; tables are created and members/tasks
+  seeded on first query. Events + registrations are real data; members + tasks are fictional sample data (`lib/sample-data.ts`).
+- Roles from Clerk public metadata `{ "member": true, "role": "superadmin|branchadmin|divisionlead|member", "campus", "division" }`;
+  permissions in `lib/viewer.ts`, re-checked in every server action (`lib/actions/*`).
+- Public events = content events + published DB events (`lib/event-store.ts`, `"use cache"` + `cacheTag("events")`, `updateTag` on publish).
+- Local testing: start Postgres on :5433 and put `DATABASE_URL` + `PROTOTYPE_DEV_ROLE=superadmin` in `.env.local`
+  (the stand-in user only works with no Clerk keys and outside Vercel).
+
 ## Brand
 Navy `#0b1b4d`, royal `#2241a8`, signal `#3c64f0`, paper `#f7f8fc`. Uppercase Montserrat 800 headlines, flowing fine-line
 texture, dotted arcs. Instagram: @escp.ai (Paris/main), @escp.ai_turin, @escp.ai_madrid, @escp.ai_berlin. London opens Jan 2027.
