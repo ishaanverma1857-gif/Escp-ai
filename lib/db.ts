@@ -57,6 +57,17 @@ create table if not exists members (
   projects text not null default '',
   permission text not null default 'member'
 );
+create table if not exists recaps (
+  event_slug text primary key,
+  held_in text not null default 'fr',
+  summary text not null default '',
+  takeaways text not null default '',
+  links text not null default '',
+  transcript text not null default '',
+  status text not null default 'draft',
+  updated_by text,
+  updated_at timestamptz not null default now()
+);
 create table if not exists tasks (
   id serial primary key,
   title text not null,

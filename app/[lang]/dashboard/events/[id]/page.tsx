@@ -11,6 +11,8 @@ import { deleteEvent, setAttendance, setEventStatus } from "@/lib/actions/events
 import { Badge, DashboardShell, DbMissing, NoAccess, Skeleton, btnDanger, btnSecondary } from "@/components/dashboard/kit";
 import { AutoSubmitCheckbox } from "@/components/dashboard/AutoSubmit";
 import EventForm from "@/components/dashboard/EventForm";
+import RecapForm, { type RecapValues } from "@/components/dashboard/RecapForm";
+import { RECAP_COLUMNS, type Recap } from "@/lib/recaps";
 
 type Registration = { id: number; name: string; email: string; campus: string | null; attended: boolean; created: string };
 
@@ -73,6 +75,48 @@ async function Registrations({ slug, canManage }: { slug: string; canManage: boo
   );
 }
 
+/** The English recap (summary, takeaways, links, transcript) for this event, edited by its campus admins. */
+async function RecapSection({ slug, canManage, lang }: { slug: string; canManage: boolean; lang: Locale }) {
+  const rows = await sql<Recap>(`select ${RECAP_COLUMNS} from recaps where event_slug = $1`, [slug]);
+  const r = rows[0];
+  return (
+    <>
+      <div className="mt-14 flex flex-wrap items-center gap-3">
+        <h3 className="text-[1.4rem] text-royal">Recap in English</h3>
+        {r?.status === "published" ? <Badge tone="good">Published</Badge> : r ? <Badge tone="warn">Draft</Badge> : <Badge>Not started</Badge>}
+      </div>
+      <p className="mt-2 max-w-[70ch] text-slate">
+        For people who couldn&apos;t follow the event in its original language: an English summary, key takeaways, links and the full
+        transcript, shown on the public event page once published.
+      </p>
+      {r?.status === "published" && (
+        <Link href={href(lang, `/events/${slug}#recap`)} className="link-underline mt-2 inline-block font-bold text-royal">
+          View the published recap ↗
+        </Link>
+      )}
+      <div className="mt-5 rounded-[1.25rem] border border-line bg-paper p-6 md:p-8">
+        {canManage ? (
+          <RecapForm
+            slug={slug}
+            values={
+              {
+                heldIn: r?.heldIn ?? "fr",
+                summary: r?.summary ?? "",
+                takeaways: r?.takeaways ?? "",
+                links: r?.links ?? "",
+                transcript: r?.transcript ?? "",
+                status: r?.status ?? null,
+              } satisfies RecapValues
+            }
+          />
+        ) : (
+          <p className="text-slate">Only this campus&apos;s admins can write the recap.</p>
+        )}
+      </div>
+    </>
+  );
+}
+
 async function EventManage({ lang, params, saved }: { lang: Locale; params: Promise<{ id: string }>; saved: Promise<string | null> }) {
   const viewer = await getViewer();
   if (!viewer) return <NoAccess lang={lang} />;
@@ -106,6 +150,7 @@ async function EventManage({ lang, params, saved }: { lang: Locale; params: Prom
         <div className="mt-4">
           <Registrations slug={fixed.slug} canManage={canManageEventOn(viewer, campus)} />
         </div>
+        <RecapSection slug={fixed.slug} canManage={canManageEventOn(viewer, campus)} lang={lang} />
       </div>
     );
   }
@@ -163,6 +208,8 @@ async function EventManage({ lang, params, saved }: { lang: Locale; params: Prom
       <div className="mt-4">
         <Registrations slug={e.slug} canManage={canManage} />
       </div>
+
+      <RecapSection slug={e.slug} canManage={canManage} lang={lang} />
 
       {canManage && (
         <>

@@ -4,8 +4,7 @@ import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
 import { getViewer, canManageEventOn } from "@/lib/viewer";
-import { staticEventCampus } from "@/lib/event-store";
-import { findEvent } from "@/lib/events";
+import { campusOfSlug } from "@/lib/event-store";
 import { hasLocale } from "@/lib/i18n";
 
 export type EventFormState = { error: string | null };
@@ -104,12 +103,6 @@ export async function deleteEvent(f: FormData) {
   redirect(`${dashboardPath(f)}/events`);
 }
 
-/** The campus an event belongs to, whether it was written in the site's content or created in the dashboard. */
-async function campusOfSlug(slug: string) {
-  if (findEvent(slug)) return staticEventCampus(slug);
-  const rows = await sql<{ campus: string }>("select campus from events where slug = $1", [slug]);
-  return rows[0]?.campus ?? null;
-}
 
 export async function setAttendance(f: FormData) {
   const viewer = await getViewer();

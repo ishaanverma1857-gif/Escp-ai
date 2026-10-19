@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   experimental: {
     globalNotFound: true,
+    // Event recaps carry full transcripts (a two-hour talk is a few hundred KB of text).
+    serverActions: { bodySizeLimit: "2mb" },
   },
   turbopack: {
     rules: {

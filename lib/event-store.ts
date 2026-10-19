@@ -144,3 +144,10 @@ export async function isRegistrable(slug: string) {
   const rows = await sql<{ id: number }>("select id from events where slug = $1 and status = 'published'", [slug]);
   return rows.length > 0;
 }
+
+/** The campus an event belongs to, whether written in the site's content or created in the dashboard. */
+export async function campusOfSlug(slug: string) {
+  if (findEvent(slug)) return staticEventCampus(slug);
+  const rows = await sql<{ campus: string }>("select campus from events where slug = $1", [slug]);
+  return rows[0]?.campus ?? null;
+}

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { site } from "@/content/site";
 import { eventCards } from "@/lib/event-store";
+import { publishedRecaps } from "@/lib/recaps";
 import PageHeader from "@/components/PageHeader";
 import Timeline from "@/components/Timeline";
 import { Button } from "@/components/ui";
@@ -19,7 +20,11 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
   if (!hasLocale(lang)) notFound();
   const dict = getDictionary(lang);
   const ev = dict.events;
-  const cards = await eventCards(lang);
+  const [cards, recaps] = await Promise.all([eventCards(lang), publishedRecaps()]);
+  const recapCards = recaps.flatMap((r) => {
+    const c = cards.find((x) => x.slug === r.eventSlug);
+    return c ? [{ ...c, heldIn: r.heldIn }] : [];
+  });
   const subscribeHref = site.instagram ? `https://instagram.com/${site.instagram}` : href(lang, "/join#contact");
 
   return (
@@ -76,14 +81,36 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
           <MaskedLines as="h2" inView lines={[ev.recapsTitle]} className="text-h2 md:col-span-5" />
           <Reveal delay={0.1} className="md:col-span-7">
             <p className="text-lead text-slate">{ev.recapsBody}</p>
-            <div className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8">
-              <p className="font-display text-xl font-semibold leading-snug">{ev.recapsEmpty}</p>
-              <div className="mt-6">
-                <Button href={subscribeHref} variant="quiet">
-                  {ev.subscribe}
-                </Button>
+            {recapCards.length > 0 ? (
+              <ul className="mt-10 grid gap-4">
+                {recapCards.map((r) => (
+                  <li key={r.slug}>
+                    <Link
+                      href={`${href(lang, `/events/${r.slug}`)}#recap`}
+                      className="group flex items-center justify-between gap-6 rounded-[1.25rem] border border-line bg-paper p-6 transition-colors hover:border-royal md:p-7"
+                    >
+                      <span>
+                        <span className="text-sm font-bold uppercase tracking-[0.15em] text-signal">{ev.recap.banner}</span>
+                        <span className="mt-2 block font-display text-[1.35rem] font-extrabold uppercase leading-tight text-royal">{r.title}</span>
+                        <span className="mt-1 block text-slate">{r.when}</span>
+                      </span>
+                      <span className="shrink-0 font-bold text-royal transition-transform group-hover:translate-x-1">
+                        {ev.recap.read} <span aria-hidden="true">→</span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="mt-10 rounded-[1.25rem] border border-dashed border-ink/25 p-8">
+                <p className="font-display text-xl font-semibold leading-snug">{ev.recapsEmpty}</p>
+                <div className="mt-6">
+                  <Button href={subscribeHref} variant="quiet">
+                    {ev.subscribe}
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </Reveal>
         </div>
       </section>

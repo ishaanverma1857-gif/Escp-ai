@@ -34,6 +34,9 @@ Montserrat (display) + Atkinson Hyperlegible Next (body). Read `node_modules/nex
 - Roles from Clerk public metadata `{ "member": true, "role": "superadmin|branchadmin|divisionlead|member", "campus", "division" }`;
   permissions in `lib/viewer.ts`, re-checked in every server action (`lib/actions/*`).
 - Public events = content events + published DB events (`lib/event-store.ts`, `"use cache"` + `cacheTag("events")`, `updateTag` on publish).
+- Event recaps (English summary, takeaways, links, transcript made with AI from the recording): `recaps` table, edited per event
+  in the dashboard (`components/dashboard/RecapForm.tsx`, includes the AI prompt), shown on the event page (`components/EventRecap.tsx`)
+  and listed on /events (`lib/recaps.ts`, `cacheTag("recaps")`).
 - Local testing: start Postgres on :5433 and put `DATABASE_URL` + `PROTOTYPE_DEV_ROLE=superadmin` in `.env.local`
   (the stand-in user only works with no Clerk keys and outside Vercel).
 

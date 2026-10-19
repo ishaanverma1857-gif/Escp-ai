@@ -7,6 +7,8 @@ import { eventDetail } from "@/lib/event-store";
 import { dbEnabled } from "@/lib/db";
 import { Button } from "@/components/ui";
 import RegisterForm from "@/components/RegisterForm";
+import EventRecap from "@/components/EventRecap";
+import { publishedRecap } from "@/lib/recaps";
 import { FadeIn, MaskedLines, Reveal } from "@/components/motion";
 
 export function generateStaticParams() {
@@ -24,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/events/[sl
 export default async function EventPage({ params }: PageProps<"/[lang]/events/[slug]">) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const event = await eventDetail(lang, slug);
+  const [event, recap] = await Promise.all([eventDetail(lang, slug), publishedRecap(slug)]);
   if (!event) notFound();
   const dict = getDictionary(lang);
   const ev = dict.events;
@@ -42,7 +44,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
   ];
 
   return (
-    <article className="pb-24 pt-32 md:pb-32 md:pt-44">
+    <article className={`pt-32 md:pt-44 ${recap ? "" : "pb-24 md:pb-32"}`}>
       <div className="container-site">
         <FadeIn>
           <Link href={href(lang, "/events")} className="link-underline text-slate hover:text-ink">
@@ -58,6 +60,14 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
             <MaskedLines lines={[event.title]} className="mt-4 text-h1 text-royal" delay={0.1} />
             <FadeIn delay={0.35}>
               <p className="mt-8 max-w-[60ch] whitespace-pre-line text-lead text-slate">{event.description}</p>
+              {recap && (
+                <a
+                  href="#recap"
+                  className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-signal-soft px-6 font-bold text-royal transition-colors hover:bg-royal hover:text-paper"
+                >
+                  <span aria-hidden="true">EN</span> {ev.recap.read} <span aria-hidden="true">↓</span>
+                </a>
+              )}
             </FadeIn>
 
             <Reveal className="mt-14">
@@ -99,6 +109,11 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
           </aside>
         </div>
       </div>
+      {recap && (
+        <div className="mt-24 md:mt-32">
+          <EventRecap recap={recap} copy={ev.recap} lang={lang} />
+        </div>
+      )}
     </article>
   );
 }
