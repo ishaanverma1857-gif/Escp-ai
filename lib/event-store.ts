@@ -90,6 +90,7 @@ export type EventDetail = {
   organizer: string | null;
   programme: string | null;
   registrationUrl: string | null;
+  heldIn: string | null;
 };
 
 export async function eventDetail(lang: Locale, slug: string): Promise<EventDetail | null> {
@@ -113,6 +114,7 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
       organizer: null,
       programme: c.programme ?? null,
       registrationUrl: fixed.registrationUrl,
+      heldIn: fixed.heldIn ?? null,
     };
   }
   const e = (await publishedDbEvents()).find((x) => x.slug === slug);
@@ -134,6 +136,7 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
     organizer: e.organizer,
     programme: null,
     registrationUrl: null,
+    heldIn: null,
   };
 }
 

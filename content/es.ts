@@ -176,6 +176,7 @@ const es: Dictionary = {
       banner: "Resumen en inglés disponible",
       read: "Leer el resumen",
       listTitle: "Resúmenes disponibles",
+      upcoming: "Se celebra en {language}. Un resumen y la transcripción completa en inglés se publicarán aquí después del evento.",
     },
     form: {
       title: "Inscripción",

@@ -60,6 +60,16 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
             <MaskedLines lines={[event.title]} className="mt-4 text-h1 text-royal" delay={0.1} />
             <FadeIn delay={0.35}>
               <p className="mt-8 max-w-[60ch] whitespace-pre-line text-lead text-slate">{event.description}</p>
+              {!recap && event.heldIn && event.heldIn !== "en" && (
+                <p lang={lang} className="mt-8 flex max-w-[60ch] items-start gap-3 rounded-2xl bg-signal-soft px-5 py-4 text-royal">
+                  <span aria-hidden="true" className="mt-0.5 shrink-0 rounded-md bg-royal px-1.5 py-0.5 text-xs font-bold text-paper">
+                    EN
+                  </span>
+                  <span className="font-bold">
+                    {ev.recap.upcoming.replace("{language}", new Intl.DisplayNames([lang], { type: "language" }).of(event.heldIn) ?? event.heldIn)}
+                  </span>
+                </p>
+              )}
               {recap && (
                 <a
                   href="#recap"

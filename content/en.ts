@@ -174,6 +174,7 @@ const en = {
       banner: "English recap available",
       read: "Read the recap",
       listTitle: "Recaps available",
+      upcoming: "Held in {language}. An English summary and full transcript will be posted here after the event.",
     },
     form: {
       title: "Register",

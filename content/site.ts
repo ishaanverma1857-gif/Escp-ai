@@ -132,10 +132,12 @@ export type EventRecord = {
   /** Number of places. TODO: add once known. */
   places: number | null;
   featured?: boolean;
+  /** Language the event is held in, when it isn't English (ISO code). Shows an "English recap after the event" notice. */
+  heldIn?: string;
 };
 
 export const events: EventRecord[] = [
-  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "17:45", startsAt: "2026-10-20T17:45:00+02:00", registrationUrl: null, places: null, featured: true },
+  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "17:45", startsAt: "2026-10-20T17:45:00+02:00", registrationUrl: null, places: null, featured: true, heldIn: "fr" },
   { slug: "ai-optimisation-workshop", date: "2026-10-28", sortKey: "2026-10-28", registrationUrl: null, places: null },
   { slug: "deep-tech-round-tables", sortKey: "2026-11-03", registrationUrl: null, places: null },
   { slug: "accio-work-workshop", sortKey: "2026-11-05", registrationUrl: null, places: null },

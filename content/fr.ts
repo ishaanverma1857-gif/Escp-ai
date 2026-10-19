@@ -176,6 +176,7 @@ const fr: Dictionary = {
       banner: "Récap en anglais disponible",
       read: "Lire le récap",
       listTitle: "Récaps disponibles",
+      upcoming: "Se déroule en {language}. Un résumé et une transcription complète en anglais seront publiés ici après l'événement.",
     },
     form: {
       title: "Inscription",

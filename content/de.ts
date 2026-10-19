@@ -176,6 +176,7 @@ const de: Dictionary = {
       banner: "Englischer Rückblick verfügbar",
       read: "Rückblick lesen",
       listTitle: "Verfügbare Rückblicke",
+      upcoming: "Findet auf {language} statt. Eine englische Zusammenfassung und das vollständige Transkript erscheinen hier nach dem Event.",
     },
     form: {
       title: "Anmeldung",
