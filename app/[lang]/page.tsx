@@ -3,12 +3,13 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { impact, partners, people, photo, teamGroups, type PersonId } from "@/content/site";
-import { dateParts, featuredEvent, sortedEvents } from "@/lib/events";
+import { dateParts, eventEndsAt, timeline } from "@/lib/events";
+import { siteClock } from "@/lib/event-store";
 import CampusNetwork from "@/components/CampusNetwork";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { CountUp, FadeIn, MaskedLines, Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { Countdown, DottedArc, FlowLines, PointerParallax, ScrollKnot, ScrollText, Tilt, VelocityMarquee } from "@/components/fx";
+import { DottedArc, EventStatus, FlowLines, PointerParallax, ScrollKnot, ScrollText, Tilt, VelocityMarquee } from "@/components/fx";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -16,10 +17,14 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const dict = getDictionary(lang);
   const { home, common, events: ev, team } = dict;
 
-  const featured = featuredEvent();
+  // Re-evaluated every minute: once an event is over, the next one takes its place.
+  const now = await siteClock();
+  const { featured, upcoming: next } = timeline(now);
   const featuredCopy = ev.items[featured.slug];
   const featuredDate = dateParts(lang, featured);
-  const upcoming = sortedEvents().filter((e) => e.slug !== featured.slug).slice(0, 3);
+  const upcoming = next.filter((e) => e.slug !== featured.slug).slice(0, 3);
+  // The poster lines below describe the KPMG conference only.
+  const isKpmg = featured.slug === "kpmg-ai-conference";
   const stats = impact.filter((s) => s.value !== null);
 
   // Everyone once, labelled with the first team they appear in.
@@ -115,57 +120,67 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
                   <Logo gap="var(--color-ink)" />
-                  <span aria-hidden="true" className="text-xl text-paper/50">×</span>
-                  <span className="font-display text-2xl font-extrabold italic tracking-tight">{featuredCopy.partner}</span>
+                  {featuredCopy.partner && (
+                    <>
+                      <span aria-hidden="true" className="text-xl text-paper/50">×</span>
+                      <span className="font-display text-2xl font-extrabold italic tracking-tight">{featuredCopy.partner}</span>
+                    </>
+                  )}
                 </div>
                 <div className="mt-8 h-px max-w-3xl bg-paper/20" />
 
                 <h3 className="mt-8 max-w-[16ch] text-[clamp(2.2rem,1.4rem+3.4vw,4.4rem)] font-extrabold leading-[1] tracking-[-0.02em]">
                   {featuredCopy.title}
                 </h3>
-                <p className="kicker mt-6">{home.featuredKind}</p>
+                {isKpmg && <p className="kicker mt-6">{home.featuredKind}</p>}
                 <p className="mt-4 max-w-[52ch] text-lead text-paper/80">{featuredCopy.description}</p>
 
-                <p className="mt-8 font-display text-xl font-bold text-signal-on-ink">{home.featuredMeet}</p>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {home.featuredAreas.map((a) => (
-                    <li key={a} className="rounded-full border border-paper/25 px-3.5 py-1 text-sm">
-                      {a}
-                    </li>
-                  ))}
-                </ul>
+                {isKpmg && (
+                  <>
+                    <p className="mt-8 font-display text-xl font-bold text-signal-on-ink">{home.featuredMeet}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {home.featuredAreas.map((a) => (
+                        <li key={a} className="rounded-full border border-paper/25 px-3.5 py-1 text-sm">
+                          {a}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
 
                 <dl className="mt-10 grid max-w-3xl gap-6 border-y border-paper/20 py-6 sm:grid-cols-[auto_auto_1fr] sm:divide-x sm:divide-paper/20 sm:gap-0">
                   <div className="sm:pr-8">
                     <dt className="sr-only">{ev.fields.date}</dt>
                     <dd className="font-display font-extrabold uppercase leading-tight">
                       <span className="block text-sm text-paper/70">{featuredDate?.weekday}</span>
-                      <span className="text-2xl">
-                        {featuredDate?.day} {featuredDate?.month}
-                      </span>
+                      <span className="text-2xl">{featuredDate ? `${featuredDate.day} ${featuredDate.month}` : featuredCopy.when}</span>
                     </dd>
                   </div>
                   <div className="sm:px-8">
                     <dt className="sr-only">{ev.fields.time}</dt>
-                    <dd className="font-display text-[2.1rem] font-extrabold leading-none">{featuredCopy.time}</dd>
+                    <dd className="font-display text-[2.1rem] font-extrabold leading-none">{featuredCopy.time ?? common.toBeAnnounced}</dd>
                   </div>
                   <div className="sm:pl-8">
                     <dt className="sr-only">{ev.fields.location}</dt>
-                    <dd className="font-display text-lg font-bold leading-snug">{featuredCopy.location}</dd>
+                    <dd className="font-display text-lg font-bold leading-snug">{featuredCopy.location ?? common.toBeAnnounced}</dd>
                   </div>
                 </dl>
 
                 <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
                   {featured.startsAt && (
-                    <div>
-                      <p className="mb-3 text-sm font-bold text-paper/70">{home.startsIn}</p>
-                      <Countdown to={featured.startsAt} labels={home.countdown} />
-                    </div>
+                    <EventStatus
+                      startsAt={featured.startsAt}
+                      endsAt={eventEndsAt(featured)}
+                      labels={{ startsIn: home.startsIn, liveNow: home.liveNow, liveNote: home.liveNote, ended: home.ended, endedNote: home.endedNote }}
+                      countdown={home.countdown}
+                    />
                   )}
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-                    <Button href={featured.registrationUrl} variant="onInk" disabledLabel={common.linkComingSoon}>
-                      {home.register}
-                    </Button>
+                    {eventEndsAt(featured) > now && (
+                      <Button href={featured.registrationUrl ?? `${href(lang, `/events/${featured.slug}`)}#register`} variant="onInk">
+                        {home.register}
+                      </Button>
+                    )}
                     <Link href={href(lang, `/events/${featured.slug}`)} className="font-bold underline decoration-paper/40 underline-offset-[6px] hover:decoration-paper">
                       {common.viewDetails}
                     </Link>

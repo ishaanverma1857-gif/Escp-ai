@@ -267,6 +267,59 @@ export function Countdown({ to, labels }: { to: string; labels: { days: string; 
   );
 }
 
+/**
+ * The featured event's live state, worked out in the visitor's browser so it is always right:
+ * a countdown before it starts, "happening now" while it runs, and "ended" afterwards.
+ */
+export function EventStatus({
+  startsAt,
+  endsAt,
+  labels,
+  countdown,
+}: {
+  startsAt: string;
+  endsAt: number;
+  labels: { startsIn: string; liveNow: string; liveNote: string; ended: string; endedNote: string };
+  countdown: { days: string; hours: string; minutes: string; seconds: string };
+}) {
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const first = setTimeout(tick, 0);
+    const id = setInterval(tick, 1000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, []);
+
+  if (now === null) return <div className="h-[6.5rem]" aria-hidden="true" />;
+  const start = new Date(startsAt).getTime();
+  if (now < start) {
+    return (
+      <div>
+        <p className="mb-3 text-sm font-bold text-paper/70">{labels.startsIn}</p>
+        <Countdown to={startsAt} labels={countdown} />
+      </div>
+    );
+  }
+  const live = now < endsAt;
+  return (
+    <div role="status" className="max-w-[34rem]">
+      <p className="flex items-center gap-3 font-display text-[clamp(1.6rem,1.2rem+1.2vw,2.2rem)] font-extrabold uppercase leading-none">
+        {live && (
+          <span aria-hidden="true" className="relative flex h-3.5 w-3.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff5a7a] opacity-75" />
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-[#ff5a7a]" />
+          </span>
+        )}
+        {live ? labels.liveNow : labels.ended}
+      </p>
+      <p className="mt-3 text-paper/75">{live ? labels.liveNote : labels.endedNote}</p>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Text that lights up word by word as you scroll                       */
 /* ------------------------------------------------------------------ */

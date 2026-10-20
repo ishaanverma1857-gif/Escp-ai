@@ -49,4 +49,6 @@ texture, dotted arcs. Instagram: @escp.ai (Paris/main), @escp.ai_turin, @escp.ai
 - `content/site.ts` nulls: official email, member platform URL, shop/order URL, application form URL, KPMG registration link,
   verified impact figures (events, members, companies, projects). Full WhatsApp group link from the Instagram bio.
 - Native review of the FR/IT/ES/DE copy. Confirm "Macro De Curtis" spelling (maybe "Marco").
-- Featured event: KPMG, Tue 20 Oct 2026 17:45, Campus Champerret, Amphi Étienne Marcel (countdown on the homepage).
+- Event timing is automatic: `endsAt` (or start + 3h) in `content/site.ts`; `lib/events.ts` `timeline()` + `siteClock()` (cached 1 min)
+  pick the homepage featured event and move finished events to "Past events"; `EventStatus` (fx.tsx) shows countdown / happening
+  now / ended live in the browser. Give every new dated event a `startsAt` (and `endsAt` when known).

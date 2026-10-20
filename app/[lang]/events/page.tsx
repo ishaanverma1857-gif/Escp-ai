@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { site } from "@/content/site";
-import { eventCards } from "@/lib/event-store";
+import { eventCards, siteClock } from "@/lib/event-store";
 import { publishedRecaps } from "@/lib/recaps";
 import PageHeader from "@/components/PageHeader";
 import Timeline from "@/components/Timeline";
@@ -20,7 +20,10 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
   if (!hasLocale(lang)) notFound();
   const dict = getDictionary(lang);
   const ev = dict.events;
-  const [cards, recaps] = await Promise.all([eventCards(lang), publishedRecaps()]);
+  const [cards, recaps, now] = await Promise.all([eventCards(lang), publishedRecaps(), siteClock()]);
+  // Re-evaluated every minute: finished events move to "Past events" on their own.
+  const upcomingCards = cards.filter((c) => c.endsAt > now);
+  const pastCards = cards.filter((c) => c.endsAt <= now).reverse();
   const recapCards = recaps.flatMap((r) => {
     const c = cards.find((x) => x.slug === r.eventSlug);
     return c ? [{ ...c, heldIn: r.heldIn }] : [];
@@ -42,7 +45,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
           <MaskedLines as="h2" inView lines={[ev.calendarTitle]} className="text-h2" />
           <div className="mt-14">
             <Timeline>
-              {cards.map((e) => {
+              {upcomingCards.map((e) => {
                 return (
                   <li key={e.slug} className="relative">
                     <Reveal y={20}>
@@ -73,6 +76,30 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
               })}
             </Timeline>
           </div>
+
+          {pastCards.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-[1.6rem] leading-tight text-royal">{ev.pastTitle}</h2>
+              <ul className="mt-6 divide-y divide-line border-y border-line">
+                {pastCards.map((e) => (
+                  <li key={e.slug}>
+                    <Link
+                      href={href(lang, `/events/${e.slug}`)}
+                      className="group grid gap-1 py-5 sm:grid-cols-[16rem_1fr_auto] sm:items-baseline sm:gap-8"
+                    >
+                      <span className="text-slate">{e.when}</span>
+                      <span className="font-display text-lg font-extrabold uppercase leading-tight text-ink/70 transition-colors group-hover:text-royal">
+                        {e.title}
+                      </span>
+                      <span className="text-sm font-bold uppercase tracking-[0.15em] text-slate">
+                        {recaps.some((r) => r.eventSlug === e.slug) ? ev.recap.read : ev.endedTag}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 

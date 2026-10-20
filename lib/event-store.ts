@@ -2,7 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { getDictionary, formatDate, type Locale } from "./i18n";
 import { dbEnabled, sql } from "./db";
-import { dateParts, findEvent, sortedEvents } from "./events";
+import { dateParts, eventEndsAt, findEvent, sortedEvents } from "./events";
 import type { EventRecord } from "@/content/site";
 
 /** An event created in the dashboard. Written in one language by the organiser, shown as-is everywhere. */
@@ -48,7 +48,7 @@ export async function publishedDbEvents(): Promise<DbEvent[]> {
 /** The campus a hand-written event belongs to, for permissions in the dashboard. */
 export const staticEventCampus = (slug: string) => (slug === "london-branch-launch" ? "london" : "paris");
 
-export type EventCard = { slug: string; when: string; title: string; short: string; featured: boolean; sortKey: string };
+export type EventCard = { slug: string; when: string; title: string; short: string; featured: boolean; sortKey: string; endsAt: number };
 
 const longDate = (lang: Locale, iso: string) => formatDate(lang, iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
@@ -62,6 +62,7 @@ export async function eventCards(lang: Locale): Promise<EventCard[]> {
     short: items[e.slug].short,
     featured: !!e.featured,
     sortKey: e.sortKey,
+    endsAt: eventEndsAt(e),
   }));
   const created = (await publishedDbEvents()).map((e) => ({
     slug: e.slug,
@@ -70,6 +71,7 @@ export async function eventCards(lang: Locale): Promise<EventCard[]> {
     short: e.short,
     featured: false,
     sortKey: e.date,
+    endsAt: Date.parse(`${e.date}T23:59:59+01:00`),
   }));
   return [...fixed, ...created].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 }
@@ -91,6 +93,7 @@ export type EventDetail = {
   programme: string | null;
   registrationUrl: string | null;
   heldIn: string | null;
+  endsAt: number;
 };
 
 export async function eventDetail(lang: Locale, slug: string): Promise<EventDetail | null> {
@@ -115,6 +118,7 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
       programme: c.programme ?? null,
       registrationUrl: fixed.registrationUrl,
       heldIn: fixed.heldIn ?? null,
+      endsAt: eventEndsAt(fixed),
     };
   }
   const e = (await publishedDbEvents()).find((x) => x.slug === slug);
@@ -137,6 +141,7 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
     programme: null,
     registrationUrl: null,
     heldIn: null,
+    endsAt: Date.parse(`${e.date}T23:59:59+01:00`),
   };
 }
 
@@ -153,4 +158,15 @@ export async function campusOfSlug(slug: string) {
   if (findEvent(slug)) return staticEventCampus(slug);
   const rows = await sql<{ campus: string }>("select campus from events where slug = $1", [slug]);
   return rows[0]?.campus ?? null;
+}
+
+/**
+ * The current time, cached for a minute. Static pages use it to decide what is upcoming or past
+ * and are regenerated in the background every minute, so nothing needs a redeploy after an event.
+ * The exact live state (countdown, "happening now") is worked out in the visitor's browser.
+ */
+export async function siteClock() {
+  "use cache";
+  cacheLife("minutes");
+  return Date.now();
 }

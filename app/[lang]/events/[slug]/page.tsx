@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { campuses, events } from "@/content/site";
-import { eventDetail } from "@/lib/event-store";
+import { eventDetail, siteClock } from "@/lib/event-store";
 import { dbEnabled } from "@/lib/db";
 import { Button } from "@/components/ui";
 import RegisterForm from "@/components/RegisterForm";
@@ -26,8 +26,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/events/[sl
 export default async function EventPage({ params }: PageProps<"/[lang]/events/[slug]">) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const [event, recap] = await Promise.all([eventDetail(lang, slug), publishedRecap(slug)]);
+  const [event, recap, now] = await Promise.all([eventDetail(lang, slug), publishedRecap(slug), siteClock()]);
   if (!event) notFound();
+  const ended = event.endsAt <= now;
   const dict = getDictionary(lang);
   const ev = dict.events;
   const tba = dict.common.toBeAnnounced;
@@ -101,8 +102,10 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
                     </div>
                   ))}
                 </dl>
-                <div className="mt-8">
-                  {event.registrationUrl || !dbEnabled() ? (
+                <div id="register" className="mt-8 scroll-mt-28">
+                  {ended ? (
+                    <p className="rounded-xl bg-paper px-5 py-4 font-bold text-slate">{ev.registrationClosed}</p>
+                  ) : event.registrationUrl || !dbEnabled() ? (
                     <Button href={event.registrationUrl} className="w-full" disabledLabel={dict.common.linkComingSoon}>
                       {ev.register}
                     </Button>

@@ -127,6 +127,8 @@ export type EventRecord = {
   time?: string;
   /** Exact start, with time zone, for the live countdown. */
   startsAt?: string;
+  /** Expected end, with time zone. Without it an event counts as ended 3 hours after it starts (or at the end of its day). */
+  endsAt?: string;
   /** Registration link. TODO: add once available. */
   registrationUrl: string | null;
   /** Number of places. TODO: add once known. */
@@ -137,7 +139,7 @@ export type EventRecord = {
 };
 
 export const events: EventRecord[] = [
-  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "17:45", startsAt: "2026-10-20T17:45:00+02:00", registrationUrl: null, places: null, featured: true, heldIn: "fr" },
+  { slug: "kpmg-ai-conference", date: "2026-10-20", sortKey: "2026-10-20", time: "17:45", startsAt: "2026-10-20T17:45:00+02:00", endsAt: "2026-10-20T21:00:00+02:00", registrationUrl: null, places: null, featured: true, heldIn: "fr" },
   { slug: "ai-optimisation-workshop", date: "2026-10-28", sortKey: "2026-10-28", registrationUrl: null, places: null },
   { slug: "deep-tech-round-tables", sortKey: "2026-11-03", registrationUrl: null, places: null },
   { slug: "accio-work-workshop", sortKey: "2026-11-05", registrationUrl: null, places: null },
