@@ -170,3 +170,20 @@ export const builders = {
     { src: null as string | null, webm: null as string | null, poster: null as string | null },
   ],
 } as const;
+
+/**
+ * Each campus's team, shown on its campus page. Teams aren't announced yet, so every slot shows
+ * "photo to be added". When announced: set name and photo (e.g. "/campuses/turin/team/giulia.webp").
+ */
+export type CampusTeamSlot = { role: "lead" | "events" | "communication" | "business"; name: string | null; photo: string | null };
+
+const placeholderTeam = (): CampusTeamSlot[] =>
+  (["lead", "events", "communication", "business"] as const).map((role) => ({ role, name: null, photo: null }));
+
+export const campusTeams: Record<CampusKey, CampusTeamSlot[]> = {
+  paris: placeholderTeam(),
+  turin: placeholderTeam(),
+  madrid: placeholderTeam(),
+  berlin: placeholderTeam(),
+  london: placeholderTeam(),
+};

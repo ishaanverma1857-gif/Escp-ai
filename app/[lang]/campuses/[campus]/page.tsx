@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InstagramLogo } from "@phosphor-icons/react/dist/ssr";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
-import { campuses, findCampus } from "@/content/site";
+import { campuses, findCampus, campusTeams } from "@/content/site";
 import { Knot } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { DottedArc, FlowLines, Tilt } from "@/components/fx";
@@ -122,6 +122,45 @@ export default async function CampusPage({ params }: PageProps<"/[lang]/campuses
                 </Tilt>
                 <h3 className="mt-5 text-[1.3rem] font-extrabold uppercase leading-tight text-royal">{l.name}</h3>
                 <p className="mt-2 text-slate">{l.blurb}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* Campus team: placeholder cards until the team is announced */}
+      <section id="team" className="border-t border-line bg-fog/50 py-24 md:py-32">
+        <div className="container-site">
+          <div className="grid gap-6 md:grid-cols-12 md:items-end">
+            <MaskedLines as="h2" inView lines={[cp.teamTitle.replace("{city}", name)]} className="text-h2 md:col-span-6" />
+            <Reveal delay={0.1} className="md:col-span-6">
+              <p className="text-lead text-slate">{cp.teamIntro.replace("{city}", name)}</p>
+            </Reveal>
+          </div>
+          <Stagger className="mt-14 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4 md:gap-x-8" gap={0.08}>
+            {campusTeams[c.key].map((m) => (
+              <StaggerItem key={m.role} className="group text-center">
+                <div className="mx-auto max-w-[16rem] overflow-hidden rounded-[2.5rem] border-[3px] border-royal/80 transition-transform duration-500 ease-[var(--ease-out-quint)] group-hover:-translate-y-2">
+                  {m.photo ? (
+                    <Image
+                      src={m.photo}
+                      alt={m.name ?? cp.teamRoles[m.role]}
+                      width={320}
+                      height={427}
+                      sizes="(min-width: 768px) 256px, 45vw"
+                      className="aspect-[3/4] w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex aspect-[3/4] w-full flex-col items-center justify-center gap-3 bg-paper px-3">
+                      <Knot gap="var(--color-paper)" className="h-12 w-12 text-royal/25" />
+                      <span className="text-xs font-bold uppercase tracking-[0.18em] text-royal/60">{cp.teamPhotoSoon}</span>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-5 font-display text-[clamp(0.95rem,0.8rem+0.6vw,1.25rem)] font-extrabold uppercase leading-tight text-royal">
+                  {m.name ?? cp.teamNameSoon}
+                </p>
+                <p className="mt-1.5 italic text-slate">{cp.teamRoles[m.role]}</p>
               </StaggerItem>
             ))}
           </Stagger>
