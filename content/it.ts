@@ -184,6 +184,10 @@ const it: Dictionary = {
       read: "Leggi il recap",
       listTitle: "Recap disponibili",
       upcoming: "Si svolge in {language}. Una sintesi e una trascrizione completa in inglese saranno pubblicate qui dopo l'evento.",
+      chooseLanguage: "Leggi in",
+      aiNoteMulti: "Sintesi e trascrizione completa preparate con l'IA dalla registrazione dell'evento. Scegli la tua lingua qui sotto.",
+      titleMulti: "Recap dell'evento",
+      bannerMulti: "Recap disponibile",
     },
     form: {
       title: "Iscrizione",

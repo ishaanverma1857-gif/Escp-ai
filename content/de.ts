@@ -184,6 +184,10 @@ const de: Dictionary = {
       read: "Rückblick lesen",
       listTitle: "Verfügbare Rückblicke",
       upcoming: "Findet auf {language} statt. Eine englische Zusammenfassung und das vollständige Transkript erscheinen hier nach dem Event.",
+      chooseLanguage: "Lesen auf",
+      aiNoteMulti: "Zusammenfassung und vollständiges Transkript, mit KI aus der Aufnahme erstellt. Wähle unten deine Sprache.",
+      titleMulti: "Event-Rückblick",
+      bannerMulti: "Rückblick verfügbar",
     },
     form: {
       title: "Anmeldung",

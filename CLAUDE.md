@@ -37,6 +37,8 @@ Montserrat (display) + Atkinson Hyperlegible Next (body). Read `node_modules/nex
 - Event recaps (English summary, takeaways, links, transcript made with AI from the recording): `recaps` table, edited per event
   in the dashboard (`components/dashboard/RecapForm.tsx`, includes the AI prompt), shown on the event page (`components/EventRecap.tsx`)
   and listed on /events (`lib/recaps.ts`, `cacheTag("recaps")`).
+- Recaps written into the site, in all 5 languages with a switcher: `content/recaps/<slug>/{en,fr,it,es,de}.ts` (Markdown strings),
+  registered in `content/recaps/index.ts`; they take precedence over dashboard recaps (`components/StaticEventRecap.tsx`, `lib/markdown.tsx`).
 - Local testing: start Postgres on :5433 and put `DATABASE_URL` + `PROTOTYPE_DEV_ROLE=superadmin` in `.env.local`
   (the stand-in user only works with no Clerk keys and outside Vercel).
 

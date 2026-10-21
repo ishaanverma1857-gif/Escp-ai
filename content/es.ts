@@ -184,6 +184,10 @@ const es: Dictionary = {
       read: "Leer el resumen",
       listTitle: "Resúmenes disponibles",
       upcoming: "Se celebra en {language}. Un resumen y la transcripción completa en inglés se publicarán aquí después del evento.",
+      chooseLanguage: "Leer en",
+      aiNoteMulti: "Resumen y transcripción completa preparados con IA a partir de la grabación del evento. Elige tu idioma a continuación.",
+      titleMulti: "Resumen del evento",
+      bannerMulti: "Resumen disponible",
     },
     form: {
       title: "Inscripción",

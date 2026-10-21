@@ -5,6 +5,7 @@ import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { site } from "@/content/site";
 import { eventCards, siteClock } from "@/lib/event-store";
 import { publishedRecaps } from "@/lib/recaps";
+import { staticRecaps } from "@/content/recaps";
 import PageHeader from "@/components/PageHeader";
 import Timeline from "@/components/Timeline";
 import { Button } from "@/components/ui";
@@ -24,9 +25,11 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
   // Re-evaluated every minute: finished events move to "Past events" on their own.
   const upcomingCards = cards.filter((c) => c.endsAt > now);
   const pastCards = cards.filter((c) => c.endsAt <= now).reverse();
-  const recapCards = recaps.flatMap((r) => {
-    const c = cards.find((x) => x.slug === r.eventSlug);
-    return c ? [{ ...c, heldIn: r.heldIn }] : [];
+  // Recaps written into the site (every language) first, then English recaps from the dashboard.
+  const recapSlugs = [...Object.keys(staticRecaps), ...recaps.map((r) => r.eventSlug).filter((x) => !staticRecaps[x])];
+  const recapCards = recapSlugs.flatMap((slug) => {
+    const c = cards.find((x) => x.slug === slug);
+    return c ? [{ ...c, multilingual: !!staticRecaps[slug] }] : [];
   });
   const subscribeHref = site.instagram ? `https://instagram.com/${site.instagram}` : href(lang, "/join#contact");
 
@@ -92,7 +95,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                         {e.title}
                       </span>
                       <span className="text-sm font-bold uppercase tracking-[0.15em] text-slate">
-                        {recaps.some((r) => r.eventSlug === e.slug) ? ev.recap.read : ev.endedTag}
+                        {recapSlugs.includes(e.slug) ? ev.recap.read : ev.endedTag}
                       </span>
                     </Link>
                   </li>
@@ -117,7 +120,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                       className="group flex items-center justify-between gap-6 rounded-[1.25rem] border border-line bg-paper p-6 transition-colors hover:border-royal md:p-7"
                     >
                       <span>
-                        <span className="text-sm font-bold uppercase tracking-[0.15em] text-signal">{ev.recap.banner}</span>
+                        <span className="text-sm font-bold uppercase tracking-[0.15em] text-signal">{r.multilingual ? ev.recap.bannerMulti : ev.recap.banner}</span>
                         <span className="mt-2 block font-display text-[1.35rem] font-extrabold uppercase leading-tight text-royal">{r.title}</span>
                         <span className="mt-1 block text-slate">{r.when}</span>
                       </span>

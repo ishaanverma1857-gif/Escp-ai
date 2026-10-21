@@ -8,6 +8,8 @@ import { dbEnabled } from "@/lib/db";
 import { Button } from "@/components/ui";
 import RegisterForm from "@/components/RegisterForm";
 import EventRecap from "@/components/EventRecap";
+import StaticEventRecap from "@/components/StaticEventRecap";
+import { staticRecaps } from "@/content/recaps";
 import { publishedRecap } from "@/lib/recaps";
 import { FadeIn, MaskedLines, Reveal } from "@/components/motion";
 
@@ -29,6 +31,9 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
   const [event, recap, now] = await Promise.all([eventDetail(lang, slug), publishedRecap(slug), siteClock()]);
   if (!event) notFound();
   const ended = event.endsAt <= now;
+  // A recap written into the site (all languages) wins over one from the dashboard.
+  const staticRecap = staticRecaps[slug] ?? null;
+  const hasRecap = !!(staticRecap || recap);
   const dict = getDictionary(lang);
   const ev = dict.events;
   const tba = dict.common.toBeAnnounced;
@@ -45,7 +50,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
   ];
 
   return (
-    <article className={`pt-32 md:pt-44 ${recap ? "" : "pb-24 md:pb-32"}`}>
+    <article className={`pt-32 md:pt-44 ${hasRecap ? "" : "pb-24 md:pb-32"}`}>
       <div className="container-site">
         <FadeIn>
           <Link href={href(lang, "/events")} className="link-underline text-slate hover:text-ink">
@@ -61,7 +66,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
             <MaskedLines lines={[event.title]} className="mt-4 text-h1 text-royal" delay={0.1} />
             <FadeIn delay={0.35}>
               <p className="mt-8 max-w-[60ch] whitespace-pre-line text-lead text-slate">{event.description}</p>
-              {!recap && event.heldIn && event.heldIn !== "en" && (
+              {!hasRecap && event.heldIn && event.heldIn !== "en" && (
                 <p lang={lang} className="mt-8 flex max-w-[60ch] items-start gap-3 rounded-2xl bg-signal-soft px-5 py-4 text-royal">
                   <span aria-hidden="true" className="mt-0.5 shrink-0 rounded-md bg-royal px-1.5 py-0.5 text-xs font-bold text-paper">
                     EN
@@ -71,12 +76,12 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
                   </span>
                 </p>
               )}
-              {recap && (
+              {hasRecap && (
                 <a
                   href="#recap"
                   className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-signal-soft px-6 font-bold text-royal transition-colors hover:bg-royal hover:text-paper"
                 >
-                  <span aria-hidden="true">EN</span> {ev.recap.read} <span aria-hidden="true">↓</span>
+                  {!staticRecap && <span aria-hidden="true">EN</span>} {ev.recap.read} <span aria-hidden="true">↓</span>
                 </a>
               )}
             </FadeIn>
@@ -122,9 +127,9 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
           </aside>
         </div>
       </div>
-      {recap && (
+      {hasRecap && (
         <div className="mt-24 md:mt-32">
-          <EventRecap recap={recap} copy={ev.recap} lang={lang} />
+          {staticRecap ? <StaticEventRecap recap={staticRecap} lang={lang} /> : recap && <EventRecap recap={recap} copy={ev.recap} lang={lang} />}
         </div>
       )}
     </article>

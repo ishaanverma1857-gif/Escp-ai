@@ -182,6 +182,10 @@ const en = {
       read: "Read the recap",
       listTitle: "Recaps available",
       upcoming: "Held in {language}. An English summary and full transcript will be posted here after the event.",
+      chooseLanguage: "Read in",
+      aiNoteMulti: "Summary and full transcript prepared with AI from the event recording. Choose your language below.",
+      titleMulti: "Event recap",
+      bannerMulti: "Recap available",
     },
     form: {
       title: "Register",
