@@ -161,8 +161,8 @@ export const products = [
 export const builders = {
   instagram: "artificially.incompetent.escp",
   members: [
-    { id: "filippo", name: "Filippo", role: "lead", photo: null as string | null },
-    { id: "constantin", name: "Constantin", role: "finance", photo: null as string | null },
+    { id: "filippo", name: "Filippo", role: "lead", photo: "/builders/filippo-1.webp" as string | null },
+    { id: "constantin", name: "Constantin", role: "finance", photo: "/builders/constantin-1.webp" as string | null },
     { id: "ishaan", name: "Ishaan", role: "cto", photo: null as string | null },
   ],
   videos: [
