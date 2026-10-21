@@ -48,32 +48,102 @@ export async function publishedDbEvents(): Promise<DbEvent[]> {
 /** The campus a hand-written event belongs to, for permissions in the dashboard. */
 export const staticEventCampus = (slug: string) => (slug === "london-branch-launch" ? "london" : "paris");
 
-export type EventCard = { slug: string; when: string; title: string; short: string; featured: boolean; sortKey: string; endsAt: number };
+/** "2026-10-28" + "18:30" in Paris time → an ISO timestamp with the right offset (summer or winter time). */
+export function parisISO(date: string, time = "00:00") {
+  const guess = new Date(`${date}T${time}:00Z`);
+  const name = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Paris", timeZoneName: "longOffset" })
+    .formatToParts(guess)
+    .find((p) => p.type === "timeZoneName")?.value;
+  const offset = name && name !== "GMT" ? name.replace("GMT", "") : "+00:00";
+  return `${date}T${time}:00${offset}`;
+}
+
+const HOUR = 3_600_000;
+const validTime = (t: string | null | undefined) => (t && /^\d{2}:\d{2}$/.test(t) ? t : null);
+
+/** One event as every list shows it: hand-written and dashboard events alike, with exact start and end. */
+export type EventCard = {
+  slug: string;
+  when: string;
+  title: string;
+  short: string;
+  description: string;
+  partner: string | null;
+  time: string | null;
+  location: string | null;
+  registrationUrl: string | null;
+  date: { weekday: string; day: string; month: string } | null;
+  /** Exact start when the time is known (drives the live timer). */
+  startsAt: string | null;
+  /** Start for ordering: the exact start, else the start of the day (or the rough sort date). */
+  start: number;
+  endsAt: number;
+  featured: boolean;
+  sortKey: string;
+};
 
 const longDate = (lang: Locale, iso: string) => formatDate(lang, iso, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-/** Every public event, hand-written and dashboard-created, in date order. */
+/** Every public event, hand-written and dashboard-created, in start order. */
 export async function eventCards(lang: Locale): Promise<EventCard[]> {
   const items = getDictionary(lang).events.items;
-  const fixed = sortedEvents().map((e) => ({
-    slug: e.slug,
-    when: items[e.slug].when,
-    title: items[e.slug].title,
-    short: items[e.slug].short,
-    featured: !!e.featured,
-    sortKey: e.sortKey,
-    endsAt: eventEndsAt(e),
-  }));
-  const created = (await publishedDbEvents()).map((e) => ({
-    slug: e.slug,
-    when: longDate(lang, e.date),
-    title: e.title,
-    short: e.short,
-    featured: false,
-    sortKey: e.date,
-    endsAt: Date.parse(`${e.date}T23:59:59+01:00`),
-  }));
-  return [...fixed, ...created].sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  const fixed: EventCard[] = sortedEvents().map((e) => {
+    const c = items[e.slug];
+    const d = dateParts(lang, e);
+    return {
+      slug: e.slug,
+      when: c.when,
+      title: c.title,
+      short: c.short,
+      description: c.description,
+      partner: c.partner,
+      time: c.time,
+      location: c.location,
+      registrationUrl: e.registrationUrl,
+      date: d ? { weekday: d.weekday, day: d.day, month: d.month } : null,
+      startsAt: e.startsAt ?? null,
+      start: Date.parse(e.startsAt ?? parisISO(e.date ?? e.sortKey)),
+      endsAt: eventEndsAt(e),
+      featured: !!e.featured,
+      sortKey: e.sortKey,
+    };
+  });
+  const created: EventCard[] = (await publishedDbEvents()).map((e) => {
+    const time = validTime(e.time);
+    const startsAt = time ? parisISO(e.date, time) : null;
+    return {
+      slug: e.slug,
+      when: longDate(lang, e.date),
+      title: e.title,
+      short: e.short,
+      description: e.description || e.short,
+      partner: null,
+      time,
+      location: e.location,
+      registrationUrl: null,
+      date: {
+        weekday: formatDate(lang, e.date, { weekday: "long" }),
+        day: formatDate(lang, e.date, { day: "numeric" }),
+        month: formatDate(lang, e.date, { month: "long" }),
+      },
+      startsAt,
+      start: Date.parse(startsAt ?? parisISO(e.date)),
+      endsAt: startsAt ? Date.parse(startsAt) + 3 * HOUR : Date.parse(parisISO(e.date, "23:59")),
+      featured: false,
+      sortKey: e.date,
+    };
+  });
+  return [...fixed, ...created].sort((a, b) => a.start - b.start || a.sortKey.localeCompare(b.sortKey));
+}
+
+/**
+ * Which events are still to come (or happening now) and which are over, at a given time.
+ * The next one — the soonest that hasn't ended — is the one the homepage features.
+ */
+export function splitByTime(cards: EventCard[], now: number) {
+  const upcoming = cards.filter((c) => c.endsAt > now);
+  const past = cards.filter((c) => c.endsAt <= now).sort((a, b) => b.start - a.start);
+  return { upcoming, past, next: upcoming[0] ?? past[0] ?? null };
 }
 
 export type EventDetail = {
@@ -93,6 +163,7 @@ export type EventDetail = {
   programme: string | null;
   registrationUrl: string | null;
   heldIn: string | null;
+  startsAt: string | null;
   endsAt: number;
 };
 
@@ -118,12 +189,15 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
       programme: c.programme ?? null,
       registrationUrl: fixed.registrationUrl,
       heldIn: fixed.heldIn ?? null,
+      startsAt: fixed.startsAt ?? null,
       endsAt: eventEndsAt(fixed),
     };
   }
   const e = (await publishedDbEvents()).find((x) => x.slug === slug);
   if (!e) return null;
   const when = longDate(lang, e.date);
+  const dbTime = validTime(e.time);
+  const dbStart = dbTime ? parisISO(e.date, dbTime) : null;
   return {
     slug,
     title: e.title,
@@ -141,7 +215,8 @@ export async function eventDetail(lang: Locale, slug: string): Promise<EventDeta
     programme: null,
     registrationUrl: null,
     heldIn: null,
-    endsAt: Date.parse(`${e.date}T23:59:59+01:00`),
+    startsAt: dbStart,
+    endsAt: dbStart ? Date.parse(dbStart) + 3 * HOUR : Date.parse(parisISO(e.date, "23:59")),
   };
 }
 

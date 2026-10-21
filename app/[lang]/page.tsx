@@ -3,8 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { impact, partners, people, photo, teamGroups, type PersonId } from "@/content/site";
-import { dateParts, eventEndsAt, timeline } from "@/lib/events";
-import { siteClock } from "@/lib/event-store";
+import { eventCards, siteClock, splitByTime } from "@/lib/event-store";
 import CampusNetwork from "@/components/CampusNetwork";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
@@ -17,14 +16,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const dict = getDictionary(lang);
   const { home, common, events: ev, team } = dict;
 
-  // Re-evaluated every minute: once an event is over, the next one takes its place.
-  const now = await siteClock();
-  const { featured, upcoming: next } = timeline(now);
-  const featuredCopy = ev.items[featured.slug];
-  const featuredDate = dateParts(lang, featured);
-  const upcoming = next.filter((e) => e.slug !== featured.slug).slice(0, 3);
+  // Re-evaluated every minute: the soonest event that hasn't ended is featured, so an event today
+  // beats one tomorrow, and once it's over the next one takes its place.
+  const [cards, now] = await Promise.all([eventCards(lang), siteClock()]);
+  const { upcoming: next, next: featured } = splitByTime(cards, now);
+  const upcoming = next.filter((e) => e.slug !== featured?.slug).slice(0, 3);
   // The poster lines below describe the KPMG conference only.
-  const isKpmg = featured.slug === "kpmg-ai-conference";
+  const isKpmg = featured?.slug === "kpmg-ai-conference";
   const stats = impact.filter((s) => s.value !== null);
 
   // Everyone once, labelled with the first team they appear in.
@@ -120,20 +118,20 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
                   <Logo gap="var(--color-ink)" />
-                  {featuredCopy.partner && (
+                  {featured.partner && (
                     <>
                       <span aria-hidden="true" className="text-xl text-paper/50">×</span>
-                      <span className="font-display text-2xl font-extrabold italic tracking-tight">{featuredCopy.partner}</span>
+                      <span className="font-display text-2xl font-extrabold italic tracking-tight">{featured.partner}</span>
                     </>
                   )}
                 </div>
                 <div className="mt-8 h-px max-w-3xl bg-paper/20" />
 
                 <h3 className="mt-8 max-w-[16ch] text-[clamp(2.2rem,1.4rem+3.4vw,4.4rem)] font-extrabold leading-[1] tracking-[-0.02em]">
-                  {featuredCopy.title}
+                  {featured.title}
                 </h3>
                 {isKpmg && <p className="kicker mt-6">{home.featuredKind}</p>}
-                <p className="mt-4 max-w-[52ch] text-lead text-paper/80">{featuredCopy.description}</p>
+                <p className="mt-4 max-w-[52ch] text-lead text-paper/80">{featured.description}</p>
 
                 {isKpmg && (
                   <>
@@ -152,17 +150,17 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                   <div className="sm:pr-8">
                     <dt className="sr-only">{ev.fields.date}</dt>
                     <dd className="font-display font-extrabold uppercase leading-tight">
-                      <span className="block text-sm text-paper/70">{featuredDate?.weekday}</span>
-                      <span className="text-2xl">{featuredDate ? `${featuredDate.day} ${featuredDate.month}` : featuredCopy.when}</span>
+                      <span className="block text-sm text-paper/70">{featured.date?.weekday}</span>
+                      <span className="text-2xl">{featured.date ? `${featured.date.day} ${featured.date.month}` : featured.when}</span>
                     </dd>
                   </div>
                   <div className="sm:px-8">
                     <dt className="sr-only">{ev.fields.time}</dt>
-                    <dd className="font-display text-[2.1rem] font-extrabold leading-none">{featuredCopy.time ?? common.toBeAnnounced}</dd>
+                    <dd className="font-display text-[2.1rem] font-extrabold leading-none">{featured.time ?? common.toBeAnnounced}</dd>
                   </div>
                   <div className="sm:pl-8">
                     <dt className="sr-only">{ev.fields.location}</dt>
-                    <dd className="font-display text-lg font-bold leading-snug">{featuredCopy.location ?? common.toBeAnnounced}</dd>
+                    <dd className="font-display text-lg font-bold leading-snug">{featured.location ?? common.toBeAnnounced}</dd>
                   </div>
                 </dl>
 
@@ -170,13 +168,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                   {featured.startsAt && (
                     <EventStatus
                       startsAt={featured.startsAt}
-                      endsAt={eventEndsAt(featured)}
+                      endsAt={featured.endsAt}
                       labels={{ startsIn: home.startsIn, liveNow: home.liveNow, liveNote: home.liveNote, ended: home.ended, endedNote: home.endedNote }}
                       countdown={home.countdown}
                     />
                   )}
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-                    {eventEndsAt(featured) > now && (
+                    {featured.endsAt > now && (
                       <Button href={featured.registrationUrl ?? `${href(lang, `/events/${featured.slug}`)}#register`} variant="onInk">
                         {home.register}
                       </Button>
@@ -194,11 +192,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <div className="mt-20 grid gap-8 md:grid-cols-12">
             <MaskedLines as="h2" inView lines={[home.upcomingTitle]} className="text-[1.6rem] leading-tight md:col-span-4" />
             <Stagger className="md:col-span-8">
-              {upcoming.map((e) => {
-                const c = ev.items[e.slug];
+              {upcoming.map((c) => {
                 return (
-                  <StaggerItem key={e.slug} className="border-t border-line last:border-b">
-                    <Link href={href(lang, `/events/${e.slug}`)} className="group grid gap-1 py-6 sm:grid-cols-[11rem_1fr] sm:gap-6">
+                  <StaggerItem key={c.slug} className="border-t border-line last:border-b">
+                    <Link href={href(lang, `/events/${c.slug}`)} className="group grid gap-1 py-6 sm:grid-cols-[11rem_1fr] sm:gap-6">
                       <span className="font-bold text-royal">{c.when}</span>
                       <span>
                         <span className="block font-display text-[1.4rem] font-bold leading-snug transition-colors group-hover:text-signal">{c.title}</span>

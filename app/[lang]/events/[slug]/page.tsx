@@ -12,6 +12,7 @@ import StaticEventRecap from "@/components/StaticEventRecap";
 import { staticRecaps } from "@/content/recaps";
 import { publishedRecap } from "@/lib/recaps";
 import { FadeIn, MaskedLines, Reveal } from "@/components/motion";
+import { EventStatus } from "@/components/fx";
 
 export function generateStaticParams() {
   // Events created in the dashboard are rendered on their first visit and cached from then on.
@@ -107,6 +108,17 @@ export default async function EventPage({ params }: PageProps<"/[lang]/events/[s
                     </div>
                   ))}
                 </dl>
+                {event.startsAt && !ended && (
+                  <div className="mt-8 border-t border-line pt-8">
+                    <EventStatus
+                      tone="light"
+                      startsAt={event.startsAt}
+                      endsAt={event.endsAt}
+                      labels={{ startsIn: dict.home.startsIn, liveNow: dict.home.liveNow, liveNote: dict.home.liveNote, ended: dict.home.ended, endedNote: dict.home.endedNote }}
+                      countdown={dict.home.countdown}
+                    />
+                  </div>
+                )}
                 <div id="register" className="mt-8 scroll-mt-28">
                   {ended ? (
                     <p className="rounded-xl bg-paper px-5 py-4 font-bold text-slate">{ev.registrationClosed}</p>

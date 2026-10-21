@@ -234,7 +234,15 @@ export function DottedArc({ className = "", dots = 9, sweep = 70, radius = 120, 
 }
 
 /** Live countdown to an event. Rendered only in the browser so server and client markup always match. */
-export function Countdown({ to, labels }: { to: string; labels: { days: string; hours: string; minutes: string; seconds: string } }) {
+export function Countdown({
+  to,
+  labels,
+  tone = "dark",
+}: {
+  to: string;
+  labels: { days: string; hours: string; minutes: string; seconds: string };
+  tone?: "dark" | "light";
+}) {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     const tick = () => setNow(Date.now());
@@ -256,9 +264,12 @@ export function Countdown({ to, labels }: { to: string; labels: { days: string; 
     { v: s % 60, l: labels.seconds },
   ];
   return (
-    <div className="flex gap-3 sm:gap-4" role="timer" aria-live="off">
+    <div className="grid max-w-[22rem] grid-cols-4 gap-2 sm:flex sm:max-w-none sm:gap-4" role="timer" aria-live="off">
       {parts.map((p) => (
-        <div key={p.l} className="min-w-[4.25rem] rounded-2xl bg-paper/10 px-3 py-2.5 text-center ring-1 ring-paper/20">
+        <div
+          key={p.l}
+          className={`min-w-0 rounded-2xl px-1.5 py-2.5 text-center ring-1 sm:min-w-[4.25rem] sm:px-3 ${tone === "dark" ? "bg-paper/10 ring-paper/20" : "bg-paper text-royal ring-line"}`}
+        >
           <span className="block font-display text-[1.9rem] font-extrabold leading-none tabular-nums">{String(p.v).padStart(2, "0")}</span>
           <span className="mt-1 block text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-75">{p.l}</span>
         </div>
@@ -276,11 +287,13 @@ export function EventStatus({
   endsAt,
   labels,
   countdown,
+  tone = "dark",
 }: {
   startsAt: string;
   endsAt: number;
   labels: { startsIn: string; liveNow: string; liveNote: string; ended: string; endedNote: string };
   countdown: { days: string; hours: string; minutes: string; seconds: string };
+  tone?: "dark" | "light";
 }) {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -298,15 +311,17 @@ export function EventStatus({
   if (now < start) {
     return (
       <div>
-        <p className="mb-3 text-sm font-bold text-paper/70">{labels.startsIn}</p>
-        <Countdown to={startsAt} labels={countdown} />
+        <p className={`mb-3 text-sm font-bold ${tone === "dark" ? "text-paper/70" : "text-slate"}`}>{labels.startsIn}</p>
+        <Countdown to={startsAt} labels={countdown} tone={tone} />
       </div>
     );
   }
   const live = now < endsAt;
   return (
     <div role="status" className="max-w-[34rem]">
-      <p className="flex items-center gap-3 font-display text-[clamp(1.6rem,1.2rem+1.2vw,2.2rem)] font-extrabold uppercase leading-none">
+      <p
+        className={`flex items-center gap-3 font-display text-[clamp(1.6rem,1.2rem+1.2vw,2.2rem)] font-extrabold uppercase leading-none ${tone === "light" ? "text-royal" : ""}`}
+      >
         {live && (
           <span aria-hidden="true" className="relative flex h-3.5 w-3.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff5a7a] opacity-75" />
@@ -315,7 +330,7 @@ export function EventStatus({
         )}
         {live ? labels.liveNow : labels.ended}
       </p>
-      <p className="mt-3 text-paper/75">{live ? labels.liveNote : labels.endedNote}</p>
+      <p className={`mt-3 ${tone === "dark" ? "text-paper/75" : "text-slate"}`}>{live ? labels.liveNote : labels.endedNote}</p>
     </div>
   );
 }

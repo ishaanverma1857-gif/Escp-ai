@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale, href } from "@/lib/i18n";
 import { site } from "@/content/site";
-import { eventCards, siteClock } from "@/lib/event-store";
+import { eventCards, siteClock, splitByTime } from "@/lib/event-store";
+import { EventStatus } from "@/components/fx";
 import { publishedRecaps } from "@/lib/recaps";
 import { staticRecaps } from "@/content/recaps";
 import PageHeader from "@/components/PageHeader";
@@ -23,8 +24,8 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
   const ev = dict.events;
   const [cards, recaps, now] = await Promise.all([eventCards(lang), publishedRecaps(), siteClock()]);
   // Re-evaluated every minute: finished events move to "Past events" on their own.
-  const upcomingCards = cards.filter((c) => c.endsAt > now);
-  const pastCards = cards.filter((c) => c.endsAt <= now).reverse();
+  const { upcoming: upcomingCards, past: pastCards } = splitByTime(cards, now);
+  const home = dict.home;
   // Recaps written into the site (every language) first, then English recaps from the dashboard.
   const recapSlugs = [...Object.keys(staticRecaps), ...recaps.map((r) => r.eventSlug).filter((x) => !staticRecaps[x])];
   const recapCards = recapSlugs.flatMap((slug) => {
@@ -48,7 +49,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
           <MaskedLines as="h2" inView lines={[ev.calendarTitle]} className="text-h2" />
           <div className="mt-14">
             <Timeline>
-              {upcomingCards.map((e) => {
+              {upcomingCards.map((e, i) => {
                 return (
                   <li key={e.slug} className="relative">
                     <Reveal y={20}>
@@ -60,7 +61,7 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                         <span
                           aria-hidden="true"
                           className={`absolute left-0 top-[0.45rem] h-4 w-4 rounded-full border-2 transition-colors duration-300 md:left-[16rem] ${
-                            e.featured ? "border-signal bg-signal" : "border-ink bg-paper group-hover:bg-ink"
+                            i === 0 ? "border-signal bg-signal" : "border-ink bg-paper group-hover:bg-ink"
                           }`}
                         />
                         <span className="md:pl-12">
@@ -68,6 +69,18 @@ export default async function EventsPage({ params }: PageProps<"/[lang]/events">
                             {e.title}
                           </span>
                           <span className="mt-3 block max-w-[56ch] text-lead text-slate">{e.short}</span>
+                          {/* The next event gets the live timer: countdown, then "happening now". */}
+                          {i === 0 && e.startsAt && (
+                            <span className="mt-6 block">
+                              <EventStatus
+                                tone="light"
+                                startsAt={e.startsAt}
+                                endsAt={e.endsAt}
+                                labels={{ startsIn: home.startsIn, liveNow: home.liveNow, liveNote: home.liveNote, ended: home.ended, endedNote: home.endedNote }}
+                                countdown={home.countdown}
+                              />
+                            </span>
+                          )}
                           <span className="mt-4 inline-block font-bold underline decoration-ink/25 underline-offset-[6px] transition-colors group-hover:decoration-signal">
                             {dict.common.viewDetails}
                           </span>
