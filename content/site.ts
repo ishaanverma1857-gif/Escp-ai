@@ -163,7 +163,7 @@ export const builders = {
   members: [
     { id: "filippo", name: "Filippo", role: "lead", photo: "/builders/filippo-1.webp" as string | null },
     { id: "constantin", name: "Constantin", role: "finance", photo: "/builders/constantin-1.webp" as string | null },
-    { id: "ishaan", name: "Ishaan", role: "cto", photo: null as string | null },
+    { id: "ishaan", name: "Ishaan", role: "cto", photo: "/builders/ishaan-1.webp" as string | null },
   ],
   videos: [
     { src: "/builders/build-film-1.mp4" as string | null, webm: "/builders/build-film-1.webm" as string | null, poster: "/builders/build-film-1-poster.webp" as string | null },
